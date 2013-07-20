@@ -3,6 +3,12 @@
 /SearchMeshkat/bin/*
 /SearchMeshkat/obj/*
 /SearchMeshkat/packages/*
+/Indexer/Indexer/bin/*
+/Indexer/Indexer/obj/*
+/Indexer/packages/*
+/Searcher/bin/*
+/Searcher/obj/*
+/Searcher/packages/*
 
 # Compiled source #
 ###################
