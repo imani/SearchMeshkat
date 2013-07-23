@@ -17,10 +17,10 @@ namespace Searcher
 {
     public partial class Form1 : Form
     {
-        private String path = @"..\..\..\Index\test";
+        private String path = @"..\..\..\Index\";
         public IndexSearcher searcher;
         public QueryParser text_parser;
-        public ArabicAnalyzer analyzer;
+        public Indexer.ArabicAnalyzerPlus analyzer;
         public Form1()
         {
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);

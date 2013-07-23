@@ -78,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArabicAnalyzerPlus.cs" />
+    <Compile Include="ArabicPlusNormalizationFilter.cs" />
+    <Compile Include="ArabicPlusNormalizer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

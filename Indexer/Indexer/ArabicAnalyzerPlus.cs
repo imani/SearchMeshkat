@@ -9,18 +9,20 @@ using System.IO;
 
 namespace Indexer
 {
-    public class ArabicAnalyzerPlus : ArabicAnalyzer
+    public class ArabicAnalyzerPlus : Analyzer
     {
+        private readonly Lucene.Net.Util.Version _version;
         public ArabicAnalyzerPlus(Lucene.Net.Util.Version version)
-            : base(version)
         {
-            ;// constructor
+            _version = version;
         }
         public override TokenStream TokenStream(string fieldName, System.IO.TextReader reader)
         {
-            String text = reader.ReadToEnd().Replace('ک', 'ك').Replace('ی', 'ي');
-            reader = new StringReader(text);
-            return base.TokenStream(fieldName, reader);
+            TokenStream result = new ArabicLetterTokenizer(reader);
+            result = new ArabicPlusNormalizationFilter(result);
+            result = new ArabicNormalizationFilter(result);
+            result = new ArabicStemFilter(result);
+            return result; 
         }
     }
 }
