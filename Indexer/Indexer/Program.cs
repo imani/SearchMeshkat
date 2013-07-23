@@ -18,21 +18,21 @@ namespace Indexer
     {
         static void Main(string[] args)
         {
-            Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\..\Index\test");
-            ArabicAnalyzer analyzer = new ArabicAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
+            Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\..\Index");
+            ArabicAnalyzer analyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT);
             IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 
             //reading files
             String path = @"..\..\..\..\Data\";
             DirectoryInfo dir = new DirectoryInfo(path);
             int counter = 0;
-            StreamWriter testWriter = new StreamWriter(path + "testWriter.dat");
+            //StreamWriter testWriter = new StreamWriter(path + "testWriter.dat");
             foreach (FileInfo file in dir.GetFiles())
             {
                 if (file.Extension != ".txt")
                     continue;
                 StreamReader reader = new StreamReader(file.FullName);
-                
+               
                 Document doc;
                 int c = 0;
                 while (!reader.EndOfStream)
@@ -41,7 +41,6 @@ namespace Indexer
                     String paragraph = reader.ReadLine();
                     Field fileName = new Field("filename", file.Name,Field.Store.YES, Field.Index.NO);
                     Field text = new Field("text", paragraph, Field.Store.YES, Field.Index.ANALYZED);
-                    testWriter.WriteLine(text.StringValue);
                     doc.Add(fileName);
                     doc.Add(text);
                     writer.AddDocument(doc);

@@ -25,7 +25,7 @@ namespace Searcher
         {
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
             searcher = new IndexSearcher(indices);
-            analyzer = new ArabicAnalyzer(Lucene.Net.Util.Version.LUCENE_CURRENT);
+            analyzer = new Indexer.ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT);
             text_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", analyzer);
             InitializeComponent();
         }
