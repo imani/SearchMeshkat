@@ -22,6 +22,7 @@ namespace Searcher
         private String path = @"..\..\..\Index\";
         public IndexSearcher searcher;
         public QueryParser text_parser;
+        public QueryParser exactText_parser;
         public Indexer.ArabicAnalyzerPlus analyzer;
        
         public Form1()
@@ -45,15 +46,20 @@ namespace Searcher
             }
             analyzer = new Indexer.ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT,StopHashst);
             text_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", analyzer);
+            exactText_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "exactText", new Indexer.ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst, false));
             InitializeComponent();
         }
 
         private void btn_search_Click(object sender, EventArgs e)
         {
 
-            Query q = text_parser.Parse(txt_search.Text);
-            txt_analyzed.Text = q.ToString();
-            var result = searcher.Search(q,10);
+            Query text_query = text_parser.Parse(txt_search.Text);
+            Query exactText_query = exactText_parser.Parse(txt_search.Text);
+            BooleanQuery booleanquery = new BooleanQuery();
+            booleanquery.Add(text_query, Occur.MUST);
+            booleanquery.Add(exactText_query, Occur.SHOULD);
+            txt_analyzed.Text = text_query.ToString();
+            var result = searcher.Search(booleanquery,10);
             txt_result.Clear();
             foreach (var res in result.ScoreDocs)
             {
