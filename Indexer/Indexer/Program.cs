@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
+
 using Lucene.Net;
 using Lucene.Net.Analysis.AR;
 using Lucene.Net.Analysis.Standard;
@@ -24,15 +26,30 @@ namespace Indexer
     {
 
 
-       
+      
         static void Main(string[] args)
         {
-          //  string[] StopWords = File.ReadAllLines("../../ArabicStopWords.txt");
+          
             Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\..\Index");
-            ArabicAnalyzerPlus analyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT);
+            string[] Stopwords = File.ReadAllLines(@"..\..\..\..\Data\stopwords.txt",Encoding.UTF8);
+           
+            HashSet<string> StopHashst = new HashSet<string>();
+            for (int i = 0; i < Stopwords.Length; i++)
+            {
+                try
+                {
+
+                    StopHashst.Add(Stopwords[i]);
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+            ArabicAnalyzerPlus analyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst);
             IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-
-
+            
+       
 
             //reading files
             // String path = @"C:\Users\mohammad\Documents\Visual Studio 2012\Projects\SearchEngine\Data";
