@@ -96,16 +96,19 @@ namespace Indexer
                 doc = new Lucene.Net.Documents.Document();
                 Paragraph mypar = new Paragraph();
                 mypar = pars[i];
-
+                string texte = pars[i].InnerText;
                 string xpath = "main/w:r/w:rPr/w:color";
 
                 XmlDocument MyDocument = new XmlDocument();
+          
                 string xml = "<main>" + mypar.InnerXml + "</main>";
                 MyDocument.LoadXml(xml);
+
 
                 XmlNamespaceManager nsMgr = new XmlNamespaceManager(MyDocument.NameTable);
                 nsMgr.AddNamespace("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
 
+              
                 XmlNode MyNode = MyDocument.SelectSingleNode(xpath, nsMgr);
                 string xpath2 = "main/w:r/w:rPr/w:sz";
                 XmlNode FooterNode = MyDocument.SelectSingleNode(xpath2, nsMgr);
@@ -119,7 +122,7 @@ namespace Indexer
                         if (MyNode.Attributes[0].Value == "465BFF" || MyNode.Attributes[0].Value == "6C3A00")
                         {
                             type = new Lucene.Net.Documents.Field("type", "title", Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
-                            title = MyNode.InnerText;
+                            title = pars[i].InnerText;
                         }
                         else
                         {

@@ -58,6 +58,7 @@ namespace Searcher
             foreach (var res in result.ScoreDocs)
             {
                 var resdoc = searcher.Doc(res.Doc);
+                
                 txt_result.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
                 if (resdoc.GetField("type").StringValue != "title")
                 {
@@ -67,10 +68,29 @@ namespace Searcher
                     //
                 }
                 txt_result.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
+                txt_result.Text += Environment.NewLine + "نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
 
                 txt_result.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
                 txt_result.Refresh();
                 
+            }
+
+
+            this.txt_result.SelectAll();
+            this.txt_result.SelectionBackColor = Color.White;
+
+            int index, lastindex;
+            index = 0;
+            lastindex = txt_result.Text.LastIndexOf(txt_search.Text);
+            string querytxt=txt_analyzed.Text.Replace("text","");
+            querytxt=querytxt.Replace(":","");
+            while (index < lastindex)
+            {
+
+                this.txt_result.Find(querytxt, index, txt_result.Text.Length, RichTextBoxFinds.None);
+                this.txt_result.SelectionBackColor = Color.Yellow;
+                index = this.txt_result.Text.IndexOf(querytxt, index) + 1;
+
             }
             
         }
