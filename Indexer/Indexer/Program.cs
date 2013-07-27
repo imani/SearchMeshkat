@@ -11,68 +11,116 @@ using Lucene.Net.Index;
 using Lucene.Net.Store;
 using System.IO;
 
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Packaging;
+
+using System.Xml.XPath;
+using System.Xml;
 
 namespace Indexer
 {
-    class Program
+  class Program
     {
+
+
+       
         static void Main(string[] args)
         {
+          //  string[] StopWords = File.ReadAllLines("../../ArabicStopWords.txt");
             Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\..\Index");
             ArabicAnalyzerPlus analyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT);
             IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 
+
+
             //reading files
+            // String path = @"C:\Users\mohammad\Documents\Visual Studio 2012\Projects\SearchEngine\Data";
             String path = @"..\..\..\..\Data\";
             DirectoryInfo dir = new DirectoryInfo(path);
-            int counter = 0;
-            //StreamWriter testWriter = new StreamWriter(path + "testWriter.dat");
+            //  writer.WriteLockTimeout = 3600000;
+
             foreach (FileInfo file in dir.GetFiles())
             {
-                if (file.Extension != ".txt")
-                    continue;
-                StreamReader reader = new StreamReader(file.FullName);
-               
-                Document doc;
-                int c = 0;
-                int parId = -1; //paragraph id
-                String title = " ";
-                while (!reader.EndOfStream)
+                // writer.WriteLockTimeout = 3600000;
+               //status.Text = "file = " + file.Name;
+                //you can add your indexing code here
+                // index .docx files in path with indexwriter
+                if (file.Extension == ".docx")
                 {
-                    String type = "content";
-                    doc = new Document();
-                    String line = reader.ReadLine();
-                    if (line.StartsWith("ParId"))
-                    {
-                        parId = Int32.Parse(line.Split(' ')[2]);
-                        continue;
-                    }
-                    else if (line.StartsWith("titr"))
-                    {
-                        type = "title";
-                        title = line.Substring(4);
-                        line = title;
-                    }
-                    else
-                        line = line.Substring(6);
 
-                    Field fileName = new Field("filename", file.Name,Field.Store.YES, Field.Index.NO);
-                    Field typefield = new Field("type", type, Field.Store.YES, Field.Index.NO);
-                    Field text = new Field("text", line, Field.Store.YES, Field.Index.ANALYZED);
-                    doc.Add(new Field("title", title, Field.Store.YES, Field.Index.NO));
-                    doc.Add(fileName);
-                    doc.Add(typefield);
-                    doc.Add(text);
-                    writer.AddDocument(doc);
-                    if (++c % 1000 == 0)
-                        Console.Write(". ");
+
+                    IndexFunc(file.FullName, writer);
+
+                    Console.WriteLine("Indexing " + file.Name + " Finished.");
                 }
-
             }
             writer.Optimize();
             writer.Commit();
             writer.Dispose();
 
+        }
+
+        static void IndexFunc(string filePath, IndexWriter writer)
+        {
+            StreamReader reader = new StreamReader(filePath);
+
+            Lucene.Net.Documents.Document doc;
+            var document = WordprocessingDocument.Open(filePath, false);
+            MainDocumentPart mainPart = document.MainDocumentPart;
+            List<Paragraph> pars = mainPart.Document.Body.Elements<Paragraph>().ToList();
+
+
+            for (int i = 0; i < pars.Count; i++)
+            {
+                //  writer.Flush(true, true, true);
+                doc = new Lucene.Net.Documents.Document();
+                Paragraph mypar = new Paragraph();
+                mypar = pars[i];
+
+                string xpath = "main/w:r/w:rPr/w:color";
+
+                XmlDocument MyDocument = new XmlDocument();
+                string xml = "<main>" + mypar.InnerXml + "</main>";
+                MyDocument.LoadXml(xml);
+
+                XmlNamespaceManager nsMgr = new XmlNamespaceManager(MyDocument.NameTable);
+                nsMgr.AddNamespace("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+
+                XmlNode MyNode = MyDocument.SelectSingleNode(xpath, nsMgr);
+                string xpath2 = "main/w:r/w:rPr/w:sz";
+                XmlNode FooterNode = MyDocument.SelectSingleNode(xpath2, nsMgr);
+
+                Lucene.Net.Documents.Field type;
+                if (!pars[i].InnerXml.Contains("center") && pars[i].InnerXml.Contains("w:color") && !pars[i].InnerXml.Contains("w:sz w:val=\"21\""))
+                {
+                    if (MyNode != null)
+                    {
+                        if (MyNode.Attributes[0].Value == "465BFF" || MyNode.Attributes[0].Value == "6C3A00")
+                        {
+                            type = new Lucene.Net.Documents.Field("type", "title", Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
+                        }
+                        else
+                        {
+                            type = new Lucene.Net.Documents.Field("type", "text", Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
+                        }
+                    }
+                    else
+                    {
+                        type = new Lucene.Net.Documents.Field("type", "text", Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
+                    }
+
+                    Lucene.Net.Documents.Field fileName = new Lucene.Net.Documents.Field("filename", Path.GetFileName(filePath), Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
+                    Lucene.Net.Documents.Field ParagraphId = new Lucene.Net.Documents.Field("paragraphid", i.ToString(), Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
+                    Lucene.Net.Documents.Field text = new Lucene.Net.Documents.Field("filename", pars[i].InnerText, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
+                    doc.Add(fileName);
+                    doc.Add(text);
+                    doc.Add(ParagraphId);
+                    doc.Add(type);
+                    writer.AddDocument(doc);
+                }
+
+            }
         }
     }
 }
