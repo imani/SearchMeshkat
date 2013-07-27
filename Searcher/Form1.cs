@@ -15,6 +15,9 @@ using Lucene.Net.Store;
 using Lucene.Net.Analysis.AR;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Search.Vectorhighlight;
+using Lucene.Net.Search.Highlight;
+using Lucene.Net.Index;
+
 namespace Searcher
 {
     public partial class Form1 : Form
@@ -27,6 +30,7 @@ namespace Searcher
        
         public Form1()
         {
+          
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
             searcher = new IndexSearcher(indices);
             string[] Stopwords = File.ReadAllLines(@"..\..\..\Data\stopwords.txt", Encoding.UTF8);
@@ -61,18 +65,23 @@ namespace Searcher
             txt_analyzed.Text = text_query.ToString();
             var result = searcher.Search(booleanquery,10);
             txt_result.Clear();
-            FastVectorHighlighter highlighter = getHighlighter();
-            FieldQuery fieldQuery = highlighter.GetFieldQuery(q);
-          
+            
+            FastVectorHighlighter highlighter = new FastVectorHighlighter();
+            
+            FieldQuery fieldQuery = highlighter.GetFieldQuery(booleanquery);
+
+           
+           
             foreach (var res in result.ScoreDocs)
             {
-               
+                string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
+           
                 var resdoc = searcher.Doc(res.Doc);
                 
                 txt_result.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
                 if (resdoc.GetField("type").StringValue != "title")
                 {
-                    txt_result.Text += " متن پاراگراف :  " + resdoc.GetField("text").StringValue;
+                    txt_result.Text += " متن پاراگراف :  " + snippet;
 
                     //highlighte words
                     //
