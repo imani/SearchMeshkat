@@ -30,8 +30,8 @@
         {
             this.txt_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
-            this.txt_result = new System.Windows.Forms.TextBox();
             this.txt_analyzed = new System.Windows.Forms.TextBox();
+            this.txt_result = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // txt_search
@@ -56,17 +56,6 @@
             this.btn_search.UseVisualStyleBackColor = true;
             this.btn_search.Click += new System.EventHandler(this.btn_search_Click);
             // 
-            // txt_result
-            // 
-            this.txt_result.Font = new System.Drawing.Font("B Yekan", 8.25F);
-            this.txt_result.Location = new System.Drawing.Point(27, 139);
-            this.txt_result.Multiline = true;
-            this.txt_result.Name = "txt_result";
-            this.txt_result.ReadOnly = true;
-            this.txt_result.Size = new System.Drawing.Size(562, 402);
-            this.txt_result.TabIndex = 2;
-            this.txt_result.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
             // txt_analyzed
             // 
             this.txt_analyzed.Location = new System.Drawing.Point(158, 64);
@@ -74,13 +63,23 @@
             this.txt_analyzed.Size = new System.Drawing.Size(429, 20);
             this.txt_analyzed.TabIndex = 3;
             // 
+            // txt_result
+            // 
+            this.txt_result.Location = new System.Drawing.Point(27, 102);
+            this.txt_result.Name = "txt_result";
+            this.txt_result.ReadOnly = true;
+            this.txt_result.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.txt_result.Size = new System.Drawing.Size(560, 418);
+            this.txt_result.TabIndex = 4;
+            this.txt_result.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 553);
-            this.Controls.Add(this.txt_analyzed);
             this.Controls.Add(this.txt_result);
+            this.Controls.Add(this.txt_analyzed);
             this.Controls.Add(this.btn_search);
             this.Controls.Add(this.txt_search);
             this.Name = "Form1";
@@ -95,8 +94,8 @@
 
         private System.Windows.Forms.TextBox txt_search;
         private System.Windows.Forms.Button btn_search;
-        private System.Windows.Forms.TextBox txt_result;
         private System.Windows.Forms.TextBox txt_analyzed;
+        private System.Windows.Forms.RichTextBox txt_result;
     }
 }
 
