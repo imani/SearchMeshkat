@@ -31,7 +31,8 @@
             this.txt_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
             this.txt_analyzed = new System.Windows.Forms.TextBox();
-            this.txt_result = new System.Windows.Forms.RichTextBox();
+            this.txt_result1 = new System.Windows.Forms.RichTextBox();
+            this.txt_result = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
             // 
             // txt_search
@@ -63,15 +64,23 @@
             this.txt_analyzed.Size = new System.Drawing.Size(429, 20);
             this.txt_analyzed.TabIndex = 3;
             // 
+            // txt_result1
+            // 
+            this.txt_result1.Location = new System.Drawing.Point(380, 102);
+            this.txt_result1.Name = "txt_result1";
+            this.txt_result1.ReadOnly = true;
+            this.txt_result1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.txt_result1.Size = new System.Drawing.Size(207, 418);
+            this.txt_result1.TabIndex = 4;
+            this.txt_result1.Text = "";
+            // 
             // txt_result
             // 
-            this.txt_result.Location = new System.Drawing.Point(27, 102);
+            this.txt_result.Location = new System.Drawing.Point(12, 102);
+            this.txt_result.MinimumSize = new System.Drawing.Size(20, 20);
             this.txt_result.Name = "txt_result";
-            this.txt_result.ReadOnly = true;
-            this.txt_result.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.txt_result.Size = new System.Drawing.Size(560, 418);
-            this.txt_result.TabIndex = 4;
-            this.txt_result.Text = "";
+            this.txt_result.Size = new System.Drawing.Size(350, 418);
+            this.txt_result.TabIndex = 5;
             // 
             // Form1
             // 
@@ -79,6 +88,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 553);
             this.Controls.Add(this.txt_result);
+            this.Controls.Add(this.txt_result1);
             this.Controls.Add(this.txt_analyzed);
             this.Controls.Add(this.btn_search);
             this.Controls.Add(this.txt_search);
@@ -95,7 +105,8 @@
         private System.Windows.Forms.TextBox txt_search;
         private System.Windows.Forms.Button btn_search;
         private System.Windows.Forms.TextBox txt_analyzed;
-        private System.Windows.Forms.RichTextBox txt_result;
+        private System.Windows.Forms.RichTextBox txt_result1;
+        private System.Windows.Forms.WebBrowser txt_result;
     }
 }
 
