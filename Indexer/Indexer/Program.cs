@@ -139,15 +139,18 @@ namespace Indexer
                    // MyStreamWriter.WriteLine("type = " + type.StringValue + "\ntitle  = " + title + "\ntext = " + pars[i].InnerText);
                     Lucene.Net.Documents.Field fileName = new Lucene.Net.Documents.Field("filename", Path.GetFileName(filePath), Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
                     Lucene.Net.Documents.Field ParagraphId = new Lucene.Net.Documents.Field("paragraphid", i.ToString(), Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
-                    Lucene.Net.Documents.Field text = new Lucene.Net.Documents.Field("text", pars[i].InnerText, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
+                    Lucene.Net.Documents.Field text = new Lucene.Net.Documents.Field("text", pars[i].InnerText, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS);
                     Lucene.Net.Documents.Field Title = new Lucene.Net.Documents.Field("title", title, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
+                   
+
+                   
                     doc.Add(Title);
                     doc.Add(fileName);
                     doc.Add(text);
                     doc.Add(ParagraphId);
                     doc.Add(type);
                     // add index of exact words
-                    doc.Add(new Lucene.Net.Documents.Field("exactText", pars[i].InnerText, Lucene.Net.Documents.Field.Store.NO, Lucene.Net.Documents.Field.Index.ANALYZED));
+                    doc.Add(new Lucene.Net.Documents.Field("exactText", pars[i].InnerText, Lucene.Net.Documents.Field.Store.NO, Lucene.Net.Documents.Field.Index.ANALYZED,Field.TermVector.WITH_POSITIONS_OFFSETS));
 
                     writer.AddDocument(doc);
                    
