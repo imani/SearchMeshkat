@@ -117,6 +117,7 @@ namespace Indexer
 
                 Lucene.Net.Documents.Field type;
                 string title = "";
+                if(pars[i].InnerText.Length>3)
                 if (!pars[i].InnerXml.Contains("center") && pars[i].InnerXml.Contains("w:color") && !pars[i].InnerXml.Contains("w:sz w:val=\"21\""))
                 {
                     if (MyNode != null)

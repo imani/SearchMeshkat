@@ -62,14 +62,14 @@ namespace Searcher
                 txt_result.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
                 if (resdoc.GetField("type").StringValue != "title")
                 {
-                    txt_result.Text += "  " + resdoc.GetField("text").StringValue;
+                    txt_result.Text += " sjkdbfhjsbfdh " + resdoc.GetField("text").StringValue;
 
                     //highlighte words
                     //
                 }
                 txt_result.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
                 txt_result.Text += Environment.NewLine + "نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
-
+                txt_result.Text += Environment.NewLine + "type : " + resdoc.GetField("type").StringValue + "\n";
                 txt_result.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
                 txt_result.Refresh();
                 
