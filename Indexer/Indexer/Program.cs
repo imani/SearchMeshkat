@@ -8,6 +8,7 @@ using System.Collections;
 using Lucene.Net;
 using Lucene.Net.Analysis.AR;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
@@ -32,7 +33,6 @@ namespace Indexer
           
             Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\..\Index");
             string[] Stopwords = File.ReadAllLines(@"..\..\..\..\Data\stopwords.txt",Encoding.UTF8);
-           
             HashSet<string> StopHashst = new HashSet<string>();
             for (int i = 0; i < Stopwords.Length; i++)
             {
@@ -47,9 +47,11 @@ namespace Indexer
                 }
             }
 
-
             ArabicAnalyzerPlus analyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst);
-            IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+            ArabicAnalyzerPlus simpleAnalyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst, false);
+            PerFieldAnalyzerWrapper perfieldAnalyzer = new PerFieldAnalyzerWrapper(analyzer);
+            perfieldAnalyzer.AddAnalyzer("exactText", simpleAnalyzer);
+            IndexWriter writer = new IndexWriter(index_dir, perfieldAnalyzer, IndexWriter.MaxFieldLength.UNLIMITED);
             
        
 
@@ -135,12 +137,14 @@ namespace Indexer
                     Lucene.Net.Documents.Field ParagraphId = new Lucene.Net.Documents.Field("paragraphid", i.ToString(), Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
                     Lucene.Net.Documents.Field text = new Lucene.Net.Documents.Field("text", pars[i].InnerText, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
                     Lucene.Net.Documents.Field Title = new Lucene.Net.Documents.Field("title", title, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
-
                     doc.Add(Title);
                     doc.Add(fileName);
                     doc.Add(text);
                     doc.Add(ParagraphId);
                     doc.Add(type);
+                    // add index of exact words
+                    doc.Add(new Lucene.Net.Documents.Field("exactText", pars[i].InnerText, Lucene.Net.Documents.Field.Store.NO, Lucene.Net.Documents.Field.Index.ANALYZED));
+
                     writer.AddDocument(doc);
                 }
 

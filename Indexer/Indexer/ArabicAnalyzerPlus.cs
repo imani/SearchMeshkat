@@ -13,10 +13,17 @@ namespace Indexer
     {
         private readonly Lucene.Net.Util.Version _version;
         private ISet<string> stopWords;
+        bool doStem;
         public ArabicAnalyzerPlus(Lucene.Net.Util.Version version, ISet<string> sw)
         {
             _version = version;
             stopWords = sw;
+        }
+        public ArabicAnalyzerPlus(Lucene.Net.Util.Version version, ISet<string> sw, bool stem=true)
+        {
+            _version = version;
+            stopWords = sw;
+            doStem = stem;
         }
         public override TokenStream TokenStream(string fieldName, System.IO.TextReader reader)
         {
@@ -24,7 +31,8 @@ namespace Indexer
             result = new StopFilter(true, result, stopWords);
             result = new ArabicPlusNormalizationFilter(result);
             result = new ArabicNormalizationFilter(result);
-            result = new ArabicStemFilter(result);
+            if (doStem)
+                result = new ArabicStemFilter(result);
             return result; 
         }
     }
