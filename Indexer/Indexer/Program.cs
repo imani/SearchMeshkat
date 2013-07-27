@@ -46,6 +46,8 @@ namespace Indexer
                     continue;
                 }
             }
+
+
             ArabicAnalyzerPlus analyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst);
             IndexWriter writer = new IndexWriter(index_dir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
             
@@ -109,6 +111,7 @@ namespace Indexer
                 XmlNode FooterNode = MyDocument.SelectSingleNode(xpath2, nsMgr);
 
                 Lucene.Net.Documents.Field type;
+                string title = "";
                 if (!pars[i].InnerXml.Contains("center") && pars[i].InnerXml.Contains("w:color") && !pars[i].InnerXml.Contains("w:sz w:val=\"21\""))
                 {
                     if (MyNode != null)
@@ -116,6 +119,7 @@ namespace Indexer
                         if (MyNode.Attributes[0].Value == "465BFF" || MyNode.Attributes[0].Value == "6C3A00")
                         {
                             type = new Lucene.Net.Documents.Field("type", "title", Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
+                            title = MyNode.InnerText;
                         }
                         else
                         {
@@ -129,7 +133,10 @@ namespace Indexer
 
                     Lucene.Net.Documents.Field fileName = new Lucene.Net.Documents.Field("filename", Path.GetFileName(filePath), Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
                     Lucene.Net.Documents.Field ParagraphId = new Lucene.Net.Documents.Field("paragraphid", i.ToString(), Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
-                    Lucene.Net.Documents.Field text = new Lucene.Net.Documents.Field("filename", pars[i].InnerText, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
+                    Lucene.Net.Documents.Field text = new Lucene.Net.Documents.Field("text", pars[i].InnerText, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.ANALYZED);
+                    Lucene.Net.Documents.Field Title = new Lucene.Net.Documents.Field("title", title, Lucene.Net.Documents.Field.Store.YES, Lucene.Net.Documents.Field.Index.NO);
+
+                    doc.Add(Title);
                     doc.Add(fileName);
                     doc.Add(text);
                     doc.Add(ParagraphId);

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+
 using Lucene.Net.Search;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Store;
@@ -21,11 +23,27 @@ namespace Searcher
         public IndexSearcher searcher;
         public QueryParser text_parser;
         public Indexer.ArabicAnalyzerPlus analyzer;
+       
         public Form1()
         {
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
             searcher = new IndexSearcher(indices);
-            analyzer = new Indexer.ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT);
+            string[] Stopwords = File.ReadAllLines(@"..\..\..\Data\stopwords.txt", Encoding.UTF8);
+
+            HashSet<string> StopHashst = new HashSet<string>();
+            for (int i = 0; i < Stopwords.Length; i++)
+            {
+                try
+                {
+
+                    StopHashst.Add(Stopwords[i]);
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+            analyzer = new Indexer.ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT,StopHashst);
             text_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", analyzer);
             InitializeComponent();
         }
@@ -44,8 +62,12 @@ namespace Searcher
                 if (resdoc.GetField("type").StringValue != "title")
                 {
                     txt_result.Text += "  " + resdoc.GetField("text").StringValue;
-                    
+
+                    //highlighte words
+                    //
                 }
+                txt_result.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
+
                 txt_result.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
                 txt_result.Refresh();
                 
