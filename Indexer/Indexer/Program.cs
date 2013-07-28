@@ -21,6 +21,7 @@ using DocumentFormat.OpenXml.Packaging;
 using System.Xml.XPath;
 using System.Xml;
 
+
 namespace Indexer
 {
   class Program
@@ -32,7 +33,10 @@ namespace Indexer
         {
           
             Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\..\Index");
-            string[] Stopwords = File.ReadAllLines(@"..\..\..\..\Data\stopwords.txt",Encoding.UTF8);
+            String data_dir = @"..\..\..\..\Data\";
+            string[] Stopwords = File.ReadAllLines(data_dir + "stopwords.txt",Encoding.UTF8);
+
+            //create stop words set
             HashSet<string> StopHashst = new HashSet<string>();
             for (int i = 0; i < Stopwords.Length; i++)
             {
@@ -47,6 +51,10 @@ namespace Indexer
                 }
             }
 
+            //name of books file
+            StreamWriter filenameWriter = new StreamWriter(data_dir + "filenames.txt");
+            String fileNames = "";
+
             ArabicAnalyzerPlus analyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst);
             ArabicAnalyzerPlus simpleAnalyzer = new ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst, false);
             PerFieldAnalyzerWrapper perfieldAnalyzer = new PerFieldAnalyzerWrapper(analyzer);
@@ -56,26 +64,23 @@ namespace Indexer
        
 
             //reading files
-            // String path = @"C:\Users\mohammad\Documents\Visual Studio 2012\Projects\SearchEngine\Data";
-            String path = @"..\..\..\..\Data\";
-            DirectoryInfo dir = new DirectoryInfo(path);
-            //  writer.WriteLockTimeout = 3600000;
+            DirectoryInfo dir = new DirectoryInfo(data_dir);
 
             foreach (FileInfo file in dir.GetFiles())
             {
-                // writer.WriteLockTimeout = 3600000;
-               //status.Text = "file = " + file.Name;
-                //you can add your indexing code here
-                // index .docx files in path with indexwriter
+                
                 if (file.Extension == ".docx")
                 {
-
-
+                    fileNames += file.Name.Substring(0, file.Name.Length - 5) + ",";
                     IndexFunc(file.FullName, writer);
-
                     Console.WriteLine("Indexing " + file.Name + " Finished.");
                 }
             }
+
+            //write name of files in a text file
+            filenameWriter.Write(fileNames);
+            filenameWriter.Close();
+
             writer.Optimize();
             writer.Commit();
             writer.Dispose();
