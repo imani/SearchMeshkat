@@ -19,6 +19,8 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Search.Vectorhighlight;
 using Lucene.Net.Search.Highlight;
 using Lucene.Net.Index;
+using Lucene.Net.Search;
+using Lucene.Net.Documents;
 
 namespace Searcher
 {
@@ -29,6 +31,7 @@ namespace Searcher
         public QueryParser text_parser;
         public QueryParser exactText_parser;
         public Indexer.ArabicAnalyzerPlus analyzer;
+        public QueryWrapperFilter filename_filter;
        
         public Form1()
         {
@@ -66,48 +69,36 @@ namespace Searcher
             booleanquery.Add(text_query, Occur.MUST);
             booleanquery.Add(exactText_query, Occur.SHOULD);
             txt_analyzed.Text = text_query.ToString();
-            var result = searcher.Search(booleanquery,10);
+           
+            
+            var result = searcher.Search(booleanquery,filename_filter, 10);
             txt_result1.Clear();
             
             FastVectorHighlighter highlighter = new FastVectorHighlighter();
             
             FieldQuery fieldQuery = highlighter.GetFieldQuery(booleanquery);
 
-            List<string> FileNameList = new List<string>();
-            foreach (Control ctl in pnlCheckbox.Controls)
-            {
-                CheckBoxX Mycheck = ctl as CheckBoxX;
-                if (Mycheck.Checked)
-                {
-                    FileNameList.Add(Mycheck.Text);
-                }
-            }
+
+
 
             foreach (var res in result.ScoreDocs)
             {
                 var resdoc = searcher.Doc(res.Doc);
-                if (FileNameList.Contains(resdoc.GetField("filename").StringValue))
+                    
+                string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
+
+                txt_result1.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
+                if (resdoc.GetField("type").StringValue != "title")
                 {
-
-                    
-                    string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
-
-                    
-
-                    txt_result1.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
-                    if (resdoc.GetField("type").StringValue != "title")
-                    {
-                        txt_result1.Text += " متن پاراگراف :  " + snippet;
-                        // txt_result.DocumentText += " متن پاراگراف :  " + snippet+"\n";
-
-                    }
-                    txt_result1.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
-                    txt_result1.Text += Environment.NewLine + "نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
-                    txt_result1.Text += Environment.NewLine + "type : " + resdoc.GetField("type").StringValue + "\n";
-                    txt_result1.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
-                    txt_result1.Refresh();
+                    txt_result1.Text += " متن پاراگراف :  " + snippet;
+                    // txt_result.DocumentText += " متن پاراگراف :  " + snippet+"\n";
 
                 }
+                txt_result1.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
+                txt_result1.Text += Environment.NewLine + "نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
+                txt_result1.Text += Environment.NewLine + "type : " + resdoc.GetField("type").StringValue + "\n";
+                txt_result1.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
+                txt_result1.Refresh();
             }
 
         //    txt_result1.Text=txt_result1.Text.Replace("<b>","\\b");
@@ -184,6 +175,22 @@ namespace Searcher
         {
             if (txt_search.Text.Length < 1)
                 return;
+
+            List<string> FileNameList = new List<string>();
+            BooleanQuery filename_query = new BooleanQuery();
+            Query filterQuery;
+            foreach (Control ctl in pnlCheckbox.Controls)
+            {
+                CheckBoxX Mycheck = ctl as CheckBoxX;
+                if (Mycheck.Checked)
+                {
+                    filterQuery = new TermQuery(new Term("filename", Mycheck.Text));
+                    filename_query.Add(filterQuery, Occur.SHOULD);
+                }
+            }
+
+            filename_filter = new QueryWrapperFilter(filename_query);
+
             btn_search_Click(sender, e);
         }
 
