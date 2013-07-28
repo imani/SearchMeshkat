@@ -89,7 +89,7 @@ namespace Searcher
                 if (FileNameList.Contains(resdoc.GetField("filename").StringValue))
                 {
 
-
+                    
                     string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
 
                     
@@ -165,6 +165,8 @@ namespace Searcher
                         // MycheckBox.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
                     MycheckBox.Location = new System.Drawing.Point(14, xlocation);
                     MycheckBox.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+                    MycheckBox.Checked = true;
+                    MycheckBox.CheckedChanged += MycheckBox_CheckedChanged;
                     xlocation += SpaceBeetweenCheckboxes;
 
 
@@ -178,8 +180,16 @@ namespace Searcher
           
         }
 
+        void MycheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (txt_search.Text.Length < 1)
+                return;
+            btn_search_Click(sender, e);
+        }
+
         private void navigationBar1_Click(object sender, EventArgs e)
         {
+            
 
         }
     }
