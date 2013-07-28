@@ -31,8 +31,8 @@
             this.txt_search = new System.Windows.Forms.TextBox();
             this.btn_search = new System.Windows.Forms.Button();
             this.txt_analyzed = new System.Windows.Forms.TextBox();
-            this.txt_result1 = new System.Windows.Forms.RichTextBox();
             this.pnlCheckbox = new System.Windows.Forms.Panel();
+            this.panelEx1 = new DevComponents.DotNetBar.PanelEx();
             this.SuspendLayout();
             // 
             // txt_search
@@ -64,31 +64,38 @@
             this.txt_analyzed.Size = new System.Drawing.Size(212, 20);
             this.txt_analyzed.TabIndex = 3;
             // 
-            // txt_result1
-            // 
-            this.txt_result1.Location = new System.Drawing.Point(25, 91);
-            this.txt_result1.Name = "txt_result1";
-            this.txt_result1.ReadOnly = true;
-            this.txt_result1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.txt_result1.Size = new System.Drawing.Size(345, 284);
-            this.txt_result1.TabIndex = 4;
-            this.txt_result1.Text = "";
-            // 
             // pnlCheckbox
             // 
             this.pnlCheckbox.AutoScroll = true;
             this.pnlCheckbox.Location = new System.Drawing.Point(376, 50);
             this.pnlCheckbox.Name = "pnlCheckbox";
-            this.pnlCheckbox.Size = new System.Drawing.Size(220, 155);
+            this.pnlCheckbox.Size = new System.Drawing.Size(220, 325);
             this.pnlCheckbox.TabIndex = 7;
+            // 
+            // panelEx1
+            // 
+            this.panelEx1.AutoScroll = true;
+            this.panelEx1.CanvasColor = System.Drawing.SystemColors.Control;
+            this.panelEx1.ColorSchemeStyle = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.panelEx1.Font = new System.Drawing.Font("B Zar", 9.25F);
+            this.panelEx1.Location = new System.Drawing.Point(12, 91);
+            this.panelEx1.Name = "panelEx1";
+            this.panelEx1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.panelEx1.Size = new System.Drawing.Size(348, 284);
+            this.panelEx1.Style.Alignment = System.Drawing.StringAlignment.Center;
+            this.panelEx1.Style.BackColor1.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarBackground;
+            this.panelEx1.Style.BorderColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.BarDockedBorder;
+            this.panelEx1.Style.ForeColor.ColorSchemePart = DevComponents.DotNetBar.eColorSchemePart.ItemText;
+            this.panelEx1.Style.GradientAngle = 90;
+            this.panelEx1.TabIndex = 8;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 399);
+            this.Controls.Add(this.panelEx1);
             this.Controls.Add(this.pnlCheckbox);
-            this.Controls.Add(this.txt_result1);
             this.Controls.Add(this.txt_analyzed);
             this.Controls.Add(this.btn_search);
             this.Controls.Add(this.txt_search);
@@ -106,8 +113,8 @@
         private System.Windows.Forms.TextBox txt_search;
         private System.Windows.Forms.Button btn_search;
         private System.Windows.Forms.TextBox txt_analyzed;
-        private System.Windows.Forms.RichTextBox txt_result1;
         private System.Windows.Forms.Panel pnlCheckbox;
+        private DevComponents.DotNetBar.PanelEx panelEx1;
     }
 }
 

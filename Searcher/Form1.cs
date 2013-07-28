@@ -69,11 +69,12 @@ namespace Searcher
             booleanquery.Add(text_query, Occur.MUST);
             booleanquery.Add(exactText_query, Occur.SHOULD);
             txt_analyzed.Text = text_query.ToString();
-           
-            
+
+          
+
             var result = searcher.Search(booleanquery,filename_filter, 10);
-            txt_result1.Clear();
-            
+       
+            panelEx1.ResetText();
             FastVectorHighlighter highlighter = new FastVectorHighlighter();
             
             FieldQuery fieldQuery = highlighter.GetFieldQuery(booleanquery);
@@ -84,27 +85,28 @@ namespace Searcher
             foreach (var res in result.ScoreDocs)
             {
                 var resdoc = searcher.Doc(res.Doc);
-                    
+                  
                 string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
-
-                txt_result1.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
+                snippet = snippet.Replace("<b>", "<b> <font  color=\"blue\">");
+                snippet = snippet.Replace("</b>","</font></b>");
+                panelEx1.Text += "عنوان: " + resdoc.GetField("title").StringValue ;
+             
                 if (resdoc.GetField("type").StringValue != "title")
                 {
-                    txt_result1.Text += " متن پاراگراف :  " + snippet;
-                    // txt_result.DocumentText += " متن پاراگراف :  " + snippet+"\n";
-
+                    panelEx1.Text += "<br/>"+" متن پاراگراف :  " + snippet;
+             
                 }
-                txt_result1.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
-                txt_result1.Text += Environment.NewLine + "نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
-                txt_result1.Text += Environment.NewLine + "type : " + resdoc.GetField("type").StringValue + "\n";
-                txt_result1.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
-                txt_result1.Refresh();
+
+                panelEx1.Text += "<br/>شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
+                panelEx1.Text += "<br/>نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
+                panelEx1.Text += "<br/>نوع : " + resdoc.GetField("type").StringValue + "<br/>";
+
+
+                panelEx1.Text += "--------------------------<br/>" ;
+            
             }
 
-        //    txt_result1.Text=txt_result1.Text.Replace("<b>","\\b");
-           // txt_result1.Text = txt_result1.Text.Replace("</b>", "\\b");
-
-        //   txt_result1.Text = "Sample \\b Text\\b0";
+   
             
 
       
@@ -144,9 +146,12 @@ namespace Searcher
             string[] filenames = allfilenames.Split(',');
             for (int i = 0; i < filenames.Length; i++)
             {
- 
 
+                if (filenames[i].Length > 0)
+                {
                     CheckBoxX MycheckBox = new CheckBoxX();
+                    MycheckBox.Font = new System.Drawing.Font("B Nazanin", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+
                     MycheckBox.Text = filenames[i];
                     MycheckBox.RightToLeft = RightToLeft.Yes;
                     Size MySize = new Size(180, 23);
@@ -160,9 +165,8 @@ namespace Searcher
                     MycheckBox.CheckedChanged += MycheckBox_CheckedChanged;
                     xlocation += SpaceBeetweenCheckboxes;
 
-
-
                 }
+            }
 
 
             //string rtfString = "{\\rtf1\\ANSI\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\r\n\\viewkind4\\uc1\\pard\\f0\\fs17 Sample \\b محمد\\b0\\par\r\n}\r\n";
