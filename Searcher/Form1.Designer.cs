@@ -32,7 +32,7 @@
             this.btn_search = new System.Windows.Forms.Button();
             this.txt_analyzed = new System.Windows.Forms.TextBox();
             this.txt_result1 = new System.Windows.Forms.RichTextBox();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pnlCheckbox = new System.Windows.Forms.Panel();
             this.checkBoxX5 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX4 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX3 = new DevComponents.DotNetBar.Controls.CheckBoxX();
@@ -42,7 +42,7 @@
             this.checkBoxX7 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX8 = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.checkBoxX9 = new DevComponents.DotNetBar.Controls.CheckBoxX();
-            this.panel1.SuspendLayout();
+            this.pnlCheckbox.SuspendLayout();
             this.SuspendLayout();
             // 
             // txt_search
@@ -84,22 +84,22 @@
             this.txt_result1.TabIndex = 4;
             this.txt_result1.Text = "";
             // 
-            // panel1
+            // pnlCheckbox
             // 
-            this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.checkBoxX6);
-            this.panel1.Controls.Add(this.checkBoxX7);
-            this.panel1.Controls.Add(this.checkBoxX8);
-            this.panel1.Controls.Add(this.checkBoxX9);
-            this.panel1.Controls.Add(this.checkBoxX5);
-            this.panel1.Controls.Add(this.checkBoxX4);
-            this.panel1.Controls.Add(this.checkBoxX3);
-            this.panel1.Controls.Add(this.checkBoxX2);
-            this.panel1.Controls.Add(this.checkBoxX1);
-            this.panel1.Location = new System.Drawing.Point(454, 50);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(142, 155);
-            this.panel1.TabIndex = 7;
+            this.pnlCheckbox.AutoScroll = true;
+            this.pnlCheckbox.Controls.Add(this.checkBoxX6);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX7);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX8);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX9);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX5);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX4);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX3);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX2);
+            this.pnlCheckbox.Controls.Add(this.checkBoxX1);
+            this.pnlCheckbox.Location = new System.Drawing.Point(415, 50);
+            this.pnlCheckbox.Name = "pnlCheckbox";
+            this.pnlCheckbox.Size = new System.Drawing.Size(181, 155);
+            this.pnlCheckbox.TabIndex = 7;
             // 
             // checkBoxX5
             // 
@@ -159,7 +159,7 @@
             // 
             // 
             this.checkBoxX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.checkBoxX1.Location = new System.Drawing.Point(14, -7);
+            this.checkBoxX1.Location = new System.Drawing.Point(14, 0);
             this.checkBoxX1.Name = "checkBoxX1";
             this.checkBoxX1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.checkBoxX1.Size = new System.Drawing.Size(100, 23);
@@ -224,7 +224,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(608, 399);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlCheckbox);
             this.Controls.Add(this.txt_result1);
             this.Controls.Add(this.txt_analyzed);
             this.Controls.Add(this.btn_search);
@@ -233,7 +233,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.panel1.ResumeLayout(false);
+            this.pnlCheckbox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -245,7 +245,7 @@
         private System.Windows.Forms.Button btn_search;
         private System.Windows.Forms.TextBox txt_analyzed;
         private System.Windows.Forms.RichTextBox txt_result1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlCheckbox;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX5;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX4;
         private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX3;

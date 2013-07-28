@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using DevComponents.DotNetBar.Controls;
 
 using Lucene.Net.Search;
 using Lucene.Net.QueryParsers;
@@ -129,9 +130,35 @@ namespace Searcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            string rtfString = "{\\rtf1\\ANSI\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\r\n\\viewkind4\\uc1\\pard\\f0\\fs17 Sample \\b محمد\\b0\\par\r\n}\r\n";
-            txt_result1.Rtf = rtfString;
-            txt_result1.Rtf = Regex.Replace(txt_result1.Rtf, @"\\'02\s*(.*?)\s*\\'02", @"\'02 \b $1 \b0 \'02");
+
+            string FilesPath = @"..\..\..\..\Data\filenames.txt";
+            StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
+            int SpaceBeetweenCheckboxes = 27;
+            int xlocation = 0;
+            while (!MyReader.EndOfStream)
+            {
+
+                string filename = MyReader.ReadLine();
+                CheckBoxX MycheckBox = new CheckBoxX();
+                MycheckBox.Text = filename;
+                MycheckBox.RightToLeft = RightToLeft.Yes;
+                Size MySize=new Size(160,23);
+                MycheckBox.Size = MySize;
+                MycheckBox.Parent = pnlCheckbox;
+                MycheckBox.Location=
+               // MycheckBox.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+                MycheckBox.Location = new System.Drawing.Point(14, xlocation);
+                MycheckBox.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+                xlocation += SpaceBeetweenCheckboxes;
+                
+
+                
+            }
+
+
+            //string rtfString = "{\\rtf1\\ANSI\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\r\n\\viewkind4\\uc1\\pard\\f0\\fs17 Sample \\b محمد\\b0\\par\r\n}\r\n";
+            //txt_result1.Rtf = rtfString;
+            //txt_result1.Rtf = Regex.Replace(txt_result1.Rtf, @"\\'02\s*(.*?)\s*\\'02", @"\'02 \b $1 \b0 \'02");
           
         }
 
