@@ -72,7 +72,7 @@ namespace Searcher
 
           
 
-            var result = searcher.Search(booleanquery,filename_filter, 10);
+            var result = searcher.Search(booleanquery,filename_filter,10);
        
             panelEx1.ResetText();
             FastVectorHighlighter highlighter = new FastVectorHighlighter();
@@ -80,26 +80,29 @@ namespace Searcher
             FieldQuery fieldQuery = highlighter.GetFieldQuery(booleanquery);
 
 
-
+            string filePath=@"..\..\..\Data\";
 
             foreach (var res in result.ScoreDocs)
             {
                 var resdoc = searcher.Doc(res.Doc);
                   
-                string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
-                snippet = snippet.Replace("<b>", "<b> <font  color=\"blue\">");
+                string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 1000);
+                snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
                 snippet = snippet.Replace("</b>","</font></b>");
-                panelEx1.Text += "عنوان: " + resdoc.GetField("title").StringValue ;
+
+
+                panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
              
                 if (resdoc.GetField("type").StringValue != "title")
                 {
-                    panelEx1.Text += "<br/>"+" متن پاراگراف :  " + snippet;
+                    
+                    panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
              
                 }
 
-                panelEx1.Text += "<br/>شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
-                panelEx1.Text += "<br/>نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
-                panelEx1.Text += "<br/>نوع : " + resdoc.GetField("type").StringValue + "<br/>";
+                panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                panelEx1.Text += "<br/><b>نام فایل:</b> <a href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
+                panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
 
 
                 panelEx1.Text += "--------------------------<br/>" ;
@@ -125,9 +128,9 @@ namespace Searcher
         }
         private void txt_search_TextChanged(object sender, EventArgs e)
         {
-            if (txt_search.Text.Length < 1)
-                return;
-            btn_search_Click(sender, e);
+            //if (txt_search.Text.Length < 1)
+            //    return;
+            //btn_search_Click(sender, e);
         }
 
         private void txt_result_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -141,7 +144,7 @@ namespace Searcher
             string FilesPath = @"..\..\..\Data\filenames.txt";
             StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
             int SpaceBeetweenCheckboxes = 27;
-            int xlocation = 0;
+            int ylocation = 0;
             string allfilenames = MyReader.ReadToEnd();
             string[] filenames = allfilenames.Split(',');
             for (int i = 0; i < filenames.Length; i++)
@@ -154,17 +157,18 @@ namespace Searcher
 
                     MycheckBox.Text = filenames[i];
                     MycheckBox.RightToLeft = RightToLeft.Yes;
-                    Size MySize = new Size(180, 23);
+                    Size MySize = new Size(250, 23);
                     MycheckBox.Size = MySize;
                     MycheckBox.Parent = pnlCheckbox;
                     MycheckBox.Location =
-                        // MycheckBox.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-                    MycheckBox.Location = new System.Drawing.Point(14, xlocation);
+                 
+                    MycheckBox.Location = new System.Drawing.Point(5, ylocation);
                     MycheckBox.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
                     MycheckBox.Checked = true;
                     MycheckBox.CheckedChanged += MycheckBox_CheckedChanged;
-                    xlocation += SpaceBeetweenCheckboxes;
-
+                   
+                    ylocation += SpaceBeetweenCheckboxes;
+                  
                 }
             }
 
