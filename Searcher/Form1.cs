@@ -72,28 +72,42 @@ namespace Searcher
             FastVectorHighlighter highlighter = new FastVectorHighlighter();
             
             FieldQuery fieldQuery = highlighter.GetFieldQuery(booleanquery);
-            
-           
-           
+
+            List<string> FileNameList = new List<string>();
+            foreach (Control ctl in pnlCheckbox.Controls)
+            {
+                CheckBoxX Mycheck = ctl as CheckBoxX;
+                if (Mycheck.Checked)
+                {
+                    FileNameList.Add(Mycheck.Text);
+                }
+            }
+
             foreach (var res in result.ScoreDocs)
             {
-                string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
-           
                 var resdoc = searcher.Doc(res.Doc);
-                
-                txt_result1.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
-                if (resdoc.GetField("type").StringValue != "title")
+                if (FileNameList.Contains(resdoc.GetField("filename").StringValue))
                 {
-                    txt_result1.Text += " متن پاراگراف :  " + snippet;
-                   // txt_result.DocumentText += " متن پاراگراف :  " + snippet+"\n";
-               
+
+
+                    string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 100);
+
+                    
+
+                    txt_result1.Text += "عنوان: " + resdoc.GetField("title").StringValue + "\r\n";
+                    if (resdoc.GetField("type").StringValue != "title")
+                    {
+                        txt_result1.Text += " متن پاراگراف :  " + snippet;
+                        // txt_result.DocumentText += " متن پاراگراف :  " + snippet+"\n";
+
+                    }
+                    txt_result1.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
+                    txt_result1.Text += Environment.NewLine + "نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
+                    txt_result1.Text += Environment.NewLine + "type : " + resdoc.GetField("type").StringValue + "\n";
+                    txt_result1.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
+                    txt_result1.Refresh();
+
                 }
-                txt_result1.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
-                txt_result1.Text += Environment.NewLine + "نام فایل: " + resdoc.GetField("filename").StringValue + "\n";
-                txt_result1.Text += Environment.NewLine + "type : " + resdoc.GetField("type").StringValue + "\n";
-                txt_result1.Text += Environment.NewLine + "--------------------------------" + Environment.NewLine;
-                txt_result1.Refresh();
-                
             }
 
         //    txt_result1.Text=txt_result1.Text.Replace("<b>","\\b");
@@ -131,29 +145,31 @@ namespace Searcher
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            string FilesPath = @"..\..\..\..\Data\filenames.txt";
+            string FilesPath = @"..\..\..\Data\filenames.txt";
             StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
             int SpaceBeetweenCheckboxes = 27;
             int xlocation = 0;
-            while (!MyReader.EndOfStream)
+            string allfilenames = MyReader.ReadToEnd();
+            string[] filenames = allfilenames.Split(',');
+            for (int i = 0; i < filenames.Length; i++)
             {
+ 
 
-                string filename = MyReader.ReadLine();
-                CheckBoxX MycheckBox = new CheckBoxX();
-                MycheckBox.Text = filename;
-                MycheckBox.RightToLeft = RightToLeft.Yes;
-                Size MySize=new Size(160,23);
-                MycheckBox.Size = MySize;
-                MycheckBox.Parent = pnlCheckbox;
-                MycheckBox.Location=
-               // MycheckBox.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-                MycheckBox.Location = new System.Drawing.Point(14, xlocation);
-                MycheckBox.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-                xlocation += SpaceBeetweenCheckboxes;
-                
+                    CheckBoxX MycheckBox = new CheckBoxX();
+                    MycheckBox.Text = filenames[i];
+                    MycheckBox.RightToLeft = RightToLeft.Yes;
+                    Size MySize = new Size(180, 23);
+                    MycheckBox.Size = MySize;
+                    MycheckBox.Parent = pnlCheckbox;
+                    MycheckBox.Location =
+                        // MycheckBox.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+                    MycheckBox.Location = new System.Drawing.Point(14, xlocation);
+                    MycheckBox.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+                    xlocation += SpaceBeetweenCheckboxes;
 
-                
-            }
+
+
+                }
 
 
             //string rtfString = "{\\rtf1\\ANSI\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\r\n\\viewkind4\\uc1\\pard\\f0\\fs17 Sample \\b محمد\\b0\\par\r\n}\r\n";
