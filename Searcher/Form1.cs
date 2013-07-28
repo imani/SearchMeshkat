@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 
 using Lucene.Net.Search;
 using Lucene.Net.QueryParsers;
@@ -30,7 +31,8 @@ namespace Searcher
        
         public Form1()
         {
-          
+
+           
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
             searcher = new IndexSearcher(indices);
             string[] Stopwords = File.ReadAllLines(@"..\..\..\Data\stopwords.txt", Encoding.UTF8);
@@ -82,7 +84,7 @@ namespace Searcher
                 if (resdoc.GetField("type").StringValue != "title")
                 {
                     txt_result1.Text += " متن پاراگراف :  " + snippet;
-                    txt_result.DocumentText += " متن پاراگراف :  " + snippet+"\n";
+                   // txt_result.DocumentText += " متن پاراگراف :  " + snippet+"\n";
                
                 }
                 txt_result1.Text += Environment.NewLine + "شماره پاراگراف: " + resdoc.GetField("paragraphid").StringValue + "\n";
@@ -93,6 +95,10 @@ namespace Searcher
                 
             }
 
+        //    txt_result1.Text=txt_result1.Text.Replace("<b>","\\b");
+           // txt_result1.Text = txt_result1.Text.Replace("</b>", "\\b");
+
+        //   txt_result1.Text = "Sample \\b Text\\b0";
             
 
       
@@ -114,6 +120,24 @@ namespace Searcher
             if (txt_search.Text.Length < 1)
                 return;
             btn_search_Click(sender, e);
+        }
+
+        private void txt_result_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            string rtfString = "{\\rtf1\\ANSI\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\r\n\\viewkind4\\uc1\\pard\\f0\\fs17 Sample \\b محمد\\b0\\par\r\n}\r\n";
+            txt_result1.Rtf = rtfString;
+            txt_result1.Rtf = Regex.Replace(txt_result1.Rtf, @"\\'02\s*(.*?)\s*\\'02", @"\'02 \b $1 \b0 \'02");
+          
+        }
+
+        private void navigationBar1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
