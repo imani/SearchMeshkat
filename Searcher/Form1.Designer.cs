@@ -35,6 +35,7 @@
             this.labelX1 = new DevComponents.DotNetBar.LabelX();
             this.highlighter1 = new DevComponents.DotNetBar.Validator.Highlighter();
             this.pnlCheckbox = new System.Windows.Forms.Panel();
+            this.pageNavigator1 = new DevComponents.DotNetBar.Controls.PageNavigator();
             this.SuspendLayout();
             // 
             // txt_search
@@ -115,11 +116,26 @@
             this.pnlCheckbox.Size = new System.Drawing.Size(283, 414);
             this.pnlCheckbox.TabIndex = 7;
             // 
+            // pageNavigator1
+            // 
+            // 
+            // 
+            // 
+            this.pageNavigator1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.pageNavigator1.Location = new System.Drawing.Point(12, 492);
+            this.pageNavigator1.Name = "pageNavigator1";
+            this.pageNavigator1.NextPageTooltip = "صفحه بعد";
+            this.pageNavigator1.PreviousPageTooltip = "صفحه قبل";
+            this.pageNavigator1.Size = new System.Drawing.Size(358, 17);
+            this.pageNavigator1.TabIndex = 0;
+            this.pageNavigator1.Text = "pageNavigator1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(663, 521);
+            this.Controls.Add(this.pageNavigator1);
             this.Controls.Add(this.labelX1);
             this.Controls.Add(this.panelEx1);
             this.Controls.Add(this.pnlCheckbox);
@@ -146,6 +162,7 @@
         private DevComponents.DotNetBar.LabelX labelX1;
         private DevComponents.DotNetBar.Validator.Highlighter highlighter1;
         private System.Windows.Forms.Panel pnlCheckbox;
+        private DevComponents.DotNetBar.Controls.PageNavigator pageNavigator1;
     }
 }
 

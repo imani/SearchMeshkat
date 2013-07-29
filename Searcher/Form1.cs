@@ -33,7 +33,8 @@ namespace Searcher
         public QueryParser exactText_parser;
         public Indexer.ArabicAnalyzerPlus analyzer;
         public QueryWrapperFilter filename_filter;
-       
+        public List<KeyValuePair<string, int>> RasoolList = new List<KeyValuePair<string, int>>();
+
         public Form1()
         {
 
@@ -63,7 +64,8 @@ namespace Searcher
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-            StringBuilder StBuilder = new StringBuilder(); 
+            string StBuilder = ""; 
+
             Query text_query = text_parser.Parse(txt_search.Text);
             Query exactText_query = exactText_parser.Parse(txt_search.Text);
             BooleanQuery booleanquery = new BooleanQuery();
@@ -87,29 +89,32 @@ namespace Searcher
             {
                 var resdoc = searcher.Doc(res.Doc);
                   
+                
+
                 string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 1000);
                 snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
                 snippet = snippet.Replace("</b>","</font></b>");
 
-                StBuilder.Append("<b>عنوان:</b> " + resdoc.GetField("title").StringValue);
+                StBuilder+="<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
                 //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
              
                 if (resdoc.GetField("type").StringValue != "title")
                 {
-                    StBuilder.Append("<br/>" + " <b>متن پاراگراف :</b>  " + snippet);
-                   // panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
+                    StBuilder+="<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
+                   
+                    // panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
              
                 }
-                StBuilder.Append("<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n");
-                StBuilder.Append("<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>");
-                StBuilder.Append("<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>");
+                StBuilder+="<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                StBuilder+="<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
+                StBuilder+="<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
 
 
                 //panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
                 //panelEx1.Text += "<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
                 //panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
 
-                StBuilder.Append("--------------------------<br/>");
+                StBuilder+="--------------------------<br/>";
                 //panelEx1.Text += "--------------------------<br/>" ;
                 panelEx1.Text = StBuilder.ToString();
             
@@ -146,6 +151,8 @@ namespace Searcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            pageNavigator1.NavigateNextPage += pageNavigator1_NavigateNextPage;
+            pageNavigator1.NavigatePreviousPage += pageNavigator1_NavigatePreviousPage;
             panelEx1.MarkupLinkClick += panelEx1_MarkupLinkClick;
             string FilesPath = @"..\..\..\Data\filenames.txt";
             StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
@@ -180,6 +187,16 @@ namespace Searcher
 
 
       
+        }
+       
+        void pageNavigator1_NavigatePreviousPage(object sender, EventArgs e)
+        {
+            
+        }
+
+        void pageNavigator1_NavigateNextPage(object sender, EventArgs e)
+        {
+           
         }
 
         void panelEx1_MarkupLinkClick(object sender, DevComponents.DotNetBar.MarkupLinkClickEventArgs e)
