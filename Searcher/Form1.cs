@@ -69,10 +69,10 @@ namespace Searcher
             booleanquery.Add(text_query, Occur.MUST);
             booleanquery.Add(exactText_query, Occur.SHOULD);
             txt_analyzed.Text = text_query.ToString();
+            SortField[] SortFields = new SortField[] { new SortField("filename", SortField.STRING), new SortField("paragraphid", SortField.STRING) };
+            Sort FNameSort = new Sort(SortFields);
 
-          
-
-            var result = searcher.Search(booleanquery,filename_filter,10);
+            var result = searcher.Search(booleanquery, filename_filter, 10, FNameSort);
        
             panelEx1.ResetText();
             FastVectorHighlighter highlighter = new FastVectorHighlighter();
@@ -173,10 +173,7 @@ namespace Searcher
             }
 
 
-            //string rtfString = "{\\rtf1\\ANSI\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\r\n\\viewkind4\\uc1\\pard\\f0\\fs17 Sample \\b محمد\\b0\\par\r\n}\r\n";
-            //txt_result1.Rtf = rtfString;
-            //txt_result1.Rtf = Regex.Replace(txt_result1.Rtf, @"\\'02\s*(.*?)\s*\\'02", @"\'02 \b $1 \b0 \'02");
-          
+      
         }
 
         void MycheckBox_CheckedChanged(object sender, EventArgs e)
