@@ -64,7 +64,8 @@ namespace Searcher
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-            string StBuilder = ""; 
+            string StBuilder = "";
+            RasoolList.Clear();
 
             Query text_query = text_parser.Parse(txt_search.Text);
             Query exactText_query = exactText_parser.Parse(txt_search.Text);
@@ -74,9 +75,19 @@ namespace Searcher
             txt_analyzed.Text = text_query.ToString();
             SortField[] SortFields = new SortField[] { new SortField("filename", SortField.STRING), new SortField("paragraphid", SortField.STRING) };
             Sort FNameSort = new Sort(SortFields);
+            Sort scoreSort = new Sort();
+            TopFieldDocs result=null;
+            if (cmb_Sort.SelectedIndex==1)//search sort filename
+            {
+                 result = searcher.Search(booleanquery, filename_filter, 10, FNameSort);
 
-            var result = searcher.Search(booleanquery, filename_filter, 10, FNameSort);
-       
+            }
+            else if (cmb_Sort.SelectedIndex==0)
+            {
+               
+                result = searcher.Search(booleanquery, filename_filter, 10, scoreSort);
+               
+            }
             panelEx1.ResetText();
             FastVectorHighlighter highlighter = new FastVectorHighlighter();
             
@@ -97,7 +108,11 @@ namespace Searcher
 
                 StBuilder+="<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
                 //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
-             
+
+                KeyValuePair<string, int> ResultPair = new KeyValuePair<string, int>(resdoc.GetField("filename").StringValue, Convert.ToInt16(resdoc.GetField("paragraphid").StringValue));
+                RasoolList.Add(ResultPair);
+
+
                 if (resdoc.GetField("type").StringValue != "title")
                 {
                     StBuilder+="<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
@@ -141,6 +156,7 @@ namespace Searcher
         {
             if (txt_search.Text.Length < 1)
                 return;
+
             btn_search_Click(sender, e);
         }
 
@@ -151,6 +167,7 @@ namespace Searcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            cmb_Sort.SelectedIndex = 0;
             pageNavigator1.NavigateNextPage += pageNavigator1_NavigateNextPage;
             pageNavigator1.NavigatePreviousPage += pageNavigator1_NavigatePreviousPage;
             panelEx1.MarkupLinkClick += panelEx1_MarkupLinkClick;
@@ -196,7 +213,7 @@ namespace Searcher
 
         void pageNavigator1_NavigateNextPage(object sender, EventArgs e)
         {
-           
+           //TermRangeQuery RangeQuery=new TermRangeQuery(
         }
 
         void panelEx1_MarkupLinkClick(object sender, DevComponents.DotNetBar.MarkupLinkClickEventArgs e)
@@ -233,10 +250,15 @@ namespace Searcher
             btn_search_Click(sender, e);
         }
 
-        private void navigationBar1_Click(object sender, EventArgs e)
-        {
-            
+      
 
+        private void cmb_Sort_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           if(txt_search.Text.Length>1)
+                btn_search_Click(sender, e);
+            
         }
+
+      
     }
 }

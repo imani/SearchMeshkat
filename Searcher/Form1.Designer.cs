@@ -36,6 +36,10 @@
             this.highlighter1 = new DevComponents.DotNetBar.Validator.Highlighter();
             this.pnlCheckbox = new System.Windows.Forms.Panel();
             this.pageNavigator1 = new DevComponents.DotNetBar.Controls.PageNavigator();
+            this.cmb_Sort = new DevComponents.DotNetBar.Controls.ComboBoxEx();
+            this.labelX2 = new DevComponents.DotNetBar.LabelX();
+            this.comboItem1 = new DevComponents.Editors.ComboItem();
+            this.comboItem2 = new DevComponents.Editors.ComboItem();
             this.SuspendLayout();
             // 
             // txt_search
@@ -113,7 +117,7 @@
             this.highlighter1.SetHighlightColor(this.pnlCheckbox, DevComponents.DotNetBar.Validator.eHighlightColor.Red);
             this.pnlCheckbox.Location = new System.Drawing.Point(376, 77);
             this.pnlCheckbox.Name = "pnlCheckbox";
-            this.pnlCheckbox.Size = new System.Drawing.Size(283, 414);
+            this.pnlCheckbox.Size = new System.Drawing.Size(283, 432);
             this.pnlCheckbox.TabIndex = 7;
             // 
             // pageNavigator1
@@ -130,11 +134,54 @@
             this.pageNavigator1.TabIndex = 0;
             this.pageNavigator1.Text = "pageNavigator1";
             // 
+            // cmb_Sort
+            // 
+            this.cmb_Sort.DisplayMember = "Text";
+            this.cmb_Sort.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmb_Sort.FormattingEnabled = true;
+            this.cmb_Sort.ItemHeight = 18;
+            this.cmb_Sort.Items.AddRange(new object[] {
+            this.comboItem1,
+            this.comboItem2});
+            this.cmb_Sort.Location = new System.Drawing.Point(376, 19);
+            this.cmb_Sort.Name = "cmb_Sort";
+            this.cmb_Sort.Size = new System.Drawing.Size(121, 24);
+            this.cmb_Sort.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.cmb_Sort.TabIndex = 10;
+            this.cmb_Sort.SelectedIndexChanged += new System.EventHandler(this.cmb_Sort_SelectedIndexChanged);
+            // 
+            // labelX2
+            // 
+            // 
+            // 
+            // 
+            this.labelX2.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.labelX2.Font = new System.Drawing.Font("B Nazanin", 12.25F, System.Drawing.FontStyle.Bold);
+            this.labelX2.Location = new System.Drawing.Point(500, 15);
+            this.labelX2.Name = "labelX2";
+            this.labelX2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.labelX2.Size = new System.Drawing.Size(122, 27);
+            this.labelX2.TabIndex = 11;
+            this.labelX2.Text = "مرتب سازی بر اساس";
+           
+            // 
+            // comboItem1
+            // 
+            this.comboItem1.FontSize = 10F;
+            this.comboItem1.Text = "شباهت";
+            // 
+            // comboItem2
+            // 
+            this.comboItem2.FontSize = 10F;
+            this.comboItem2.Text = "کتاب";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(663, 521);
+            this.Controls.Add(this.labelX2);
+            this.Controls.Add(this.cmb_Sort);
             this.Controls.Add(this.pageNavigator1);
             this.Controls.Add(this.labelX1);
             this.Controls.Add(this.panelEx1);
@@ -163,6 +210,10 @@
         private DevComponents.DotNetBar.Validator.Highlighter highlighter1;
         private System.Windows.Forms.Panel pnlCheckbox;
         private DevComponents.DotNetBar.Controls.PageNavigator pageNavigator1;
+        private DevComponents.DotNetBar.LabelX labelX2;
+        private DevComponents.DotNetBar.Controls.ComboBoxEx cmb_Sort;
+        private DevComponents.Editors.ComboItem comboItem1;
+        private DevComponents.Editors.ComboItem comboItem2;
     }
 }
 
