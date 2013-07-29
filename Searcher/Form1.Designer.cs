@@ -37,9 +37,10 @@
             this.pnlCheckbox = new System.Windows.Forms.Panel();
             this.pageNavigator1 = new DevComponents.DotNetBar.Controls.PageNavigator();
             this.cmb_Sort = new DevComponents.DotNetBar.Controls.ComboBoxEx();
-            this.labelX2 = new DevComponents.DotNetBar.LabelX();
             this.comboItem1 = new DevComponents.Editors.ComboItem();
             this.comboItem2 = new DevComponents.Editors.ComboItem();
+            this.labelX2 = new DevComponents.DotNetBar.LabelX();
+            this.pagelabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txt_search
@@ -150,6 +151,16 @@
             this.cmb_Sort.TabIndex = 10;
             this.cmb_Sort.SelectedIndexChanged += new System.EventHandler(this.cmb_Sort_SelectedIndexChanged);
             // 
+            // comboItem1
+            // 
+            this.comboItem1.FontSize = 10F;
+            this.comboItem1.Text = "شباهت";
+            // 
+            // comboItem2
+            // 
+            this.comboItem2.FontSize = 10F;
+            this.comboItem2.Text = "کتاب";
+            // 
             // labelX2
             // 
             // 
@@ -163,23 +174,20 @@
             this.labelX2.Size = new System.Drawing.Size(122, 27);
             this.labelX2.TabIndex = 11;
             this.labelX2.Text = "مرتب سازی بر اساس";
-           
             // 
-            // comboItem1
+            // pagelabel
             // 
-            this.comboItem1.FontSize = 10F;
-            this.comboItem1.Text = "شباهت";
-            // 
-            // comboItem2
-            // 
-            this.comboItem2.FontSize = 10F;
-            this.comboItem2.Text = "کتاب";
+            this.pagelabel.Location = new System.Drawing.Point(156, 492);
+            this.pagelabel.Name = "pagelabel";
+            this.pagelabel.Size = new System.Drawing.Size(95, 16);
+            this.pagelabel.TabIndex = 12;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(663, 521);
+            this.Controls.Add(this.pagelabel);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.cmb_Sort);
             this.Controls.Add(this.pageNavigator1);
@@ -214,6 +222,7 @@
         private DevComponents.DotNetBar.Controls.ComboBoxEx cmb_Sort;
         private DevComponents.Editors.ComboItem comboItem1;
         private DevComponents.Editors.ComboItem comboItem2;
+        private System.Windows.Forms.Label pagelabel;
     }
 }
 

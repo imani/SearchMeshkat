@@ -23,6 +23,7 @@ using Lucene.Net.Search.Highlight;
 using Lucene.Net.Index;
 using Lucene.Net.Documents;
 
+
 namespace Searcher
 {
     public partial class Form1 : Form
@@ -34,7 +35,7 @@ namespace Searcher
         public Indexer.ArabicAnalyzerPlus analyzer;
         public QueryWrapperFilter filename_filter;
         public List<KeyValuePair<string, int>> RasoolList = new List<KeyValuePair<string, int>>();
-
+        public int PageCounter;
         public Form1()
         {
 
@@ -59,11 +60,13 @@ namespace Searcher
             analyzer = new Indexer.ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT,StopHashst);
             text_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "text", analyzer);
             exactText_parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_CURRENT, "exactText", new Indexer.ArabicAnalyzerPlus(Lucene.Net.Util.Version.LUCENE_CURRENT, StopHashst, false));
+            PageCounter = 0;
             InitializeComponent();
         }
 
         private void btn_search_Click(object sender, EventArgs e)
         {
+           pagelabel.Text ="شماره صفحه : "+ (PageCounter + 1).ToString();
             string StBuilder = "";
             RasoolList.Clear();
 
@@ -79,13 +82,13 @@ namespace Searcher
             TopFieldDocs result=null;
             if (cmb_Sort.SelectedIndex==1)//search sort filename
             {
-                 result = searcher.Search(booleanquery, filename_filter, 10, FNameSort);
+                result = searcher.Search(booleanquery, filename_filter, (PageCounter+1)*10, FNameSort);
 
             }
             else if (cmb_Sort.SelectedIndex==0)
             {
-               
-                result = searcher.Search(booleanquery, filename_filter, 10, scoreSort);
+
+                result = searcher.Search(booleanquery, filename_filter, (PageCounter+1)*10, scoreSort);
                
             }
             panelEx1.ResetText();
@@ -95,45 +98,49 @@ namespace Searcher
 
 
             string filePath=@"..\..\..\Data\";
-
-            foreach (var res in result.ScoreDocs)
+            for (int i = PageCounter * 10; i < result.ScoreDocs.Length; i++)
             {
-                var resdoc = searcher.Doc(res.Doc);
-                  
                 
-
-                string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 1000);
-                snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
-                snippet = snippet.Replace("</b>","</font></b>");
-
-                StBuilder+="<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
-                //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
-
-                KeyValuePair<string, int> ResultPair = new KeyValuePair<string, int>(resdoc.GetField("filename").StringValue, Convert.ToInt16(resdoc.GetField("paragraphid").StringValue));
-                RasoolList.Add(ResultPair);
+            //}
+            //    foreach (var res in result.ScoreDocs)
+            //    {
+                  //  var resdoc = searcher.Doc(res.Doc);
+                var res = result.ScoreDocs[i];
+                var resdoc = searcher.Doc(res.Doc);
 
 
-                if (resdoc.GetField("type").StringValue != "title")
-                {
-                    StBuilder+="<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
-                   
-                    // panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
-             
+                    string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 1000);
+                    snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
+                    snippet = snippet.Replace("</b>", "</font></b>");
+
+                    StBuilder += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
+                    //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
+
+                    KeyValuePair<string, int> ResultPair = new KeyValuePair<string, int>(resdoc.GetField("filename").StringValue, Convert.ToInt16(resdoc.GetField("paragraphid").StringValue));
+                    RasoolList.Add(ResultPair);
+
+
+                    if (resdoc.GetField("type").StringValue != "title")
+                    {
+                        StBuilder += "<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
+
+                        // panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
+
+                    }
+                    StBuilder += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                    StBuilder += "<br/><b>نام فایل:</b> <a  href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue + "</a>";
+                    StBuilder += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
+
+
+                    //panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                    //panelEx1.Text += "<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
+                    //panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
+
+                    StBuilder += "--------------------------<br/>";
+                    //panelEx1.Text += "--------------------------<br/>" ;
+                    panelEx1.Text = StBuilder.ToString();
+
                 }
-                StBuilder+="<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
-                StBuilder+="<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
-                StBuilder+="<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
-
-
-                //panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
-                //panelEx1.Text += "<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
-                //panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
-
-                StBuilder+="--------------------------<br/>";
-                //panelEx1.Text += "--------------------------<br/>" ;
-                panelEx1.Text = StBuilder.ToString();
-            
-            }
 
    
             
@@ -170,6 +177,7 @@ namespace Searcher
             cmb_Sort.SelectedIndex = 0;
             pageNavigator1.NavigateNextPage += pageNavigator1_NavigateNextPage;
             pageNavigator1.NavigatePreviousPage += pageNavigator1_NavigatePreviousPage;
+        
             panelEx1.MarkupLinkClick += panelEx1_MarkupLinkClick;
             string FilesPath = @"..\..\..\Data\filenames.txt";
             StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
@@ -208,12 +216,16 @@ namespace Searcher
        
         void pageNavigator1_NavigatePreviousPage(object sender, EventArgs e)
         {
+            PageCounter--;
             
+            btn_search_Click(sender, e);
+
         }
 
         void pageNavigator1_NavigateNextPage(object sender, EventArgs e)
         {
-           //TermRangeQuery RangeQuery=new TermRangeQuery(
+            PageCounter++;
+            btn_search_Click(sender, e);
         }
 
         void panelEx1_MarkupLinkClick(object sender, DevComponents.DotNetBar.MarkupLinkClickEventArgs e)
@@ -224,6 +236,8 @@ namespace Searcher
                 ProcessStartInfo MyInfo = new ProcessStartInfo(e.HRef);
                 p.StartInfo = MyInfo;
                 p.Start();
+          
+                
             }
         }
 
