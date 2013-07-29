@@ -98,13 +98,10 @@ namespace Searcher
 
 
             string filePath=@"..\..\..\Data\";
+            
             for (int i = PageCounter * 10; i < result.ScoreDocs.Length; i++)
             {
                 
-            //}
-            //    foreach (var res in result.ScoreDocs)
-            //    {
-                  //  var resdoc = searcher.Doc(res.Doc);
                 var res = result.ScoreDocs[i];
                 var resdoc = searcher.Doc(res.Doc);
 
@@ -138,9 +135,10 @@ namespace Searcher
 
                     StBuilder += "--------------------------<br/>";
                     //panelEx1.Text += "--------------------------<br/>" ;
-                    panelEx1.Text = StBuilder.ToString();
-
                 }
+
+            panelEx1.Text = StBuilder.ToString();
+            
 
    
             
@@ -164,7 +162,7 @@ namespace Searcher
             if (txt_search.Text.Length < 1)
                 return;
 
-            btn_search_Click(sender, e);
+            //btn_search_Click(sender, e);
         }
 
         private void txt_result_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -268,8 +266,8 @@ namespace Searcher
 
         private void cmb_Sort_SelectedIndexChanged(object sender, EventArgs e)
         {
-           if(txt_search.Text.Length>1)
-                btn_search_Click(sender, e);
+            if (txt_search.Text.Length > 1)
+               btn_search_Click(sender, e);
             
         }
 
