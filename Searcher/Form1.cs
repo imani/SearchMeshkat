@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+
 using DevComponents.DotNetBar.Controls;
 
 using Lucene.Net.Search;
@@ -19,7 +21,6 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Search.Vectorhighlight;
 using Lucene.Net.Search.Highlight;
 using Lucene.Net.Index;
-using Lucene.Net.Search;
 using Lucene.Net.Documents;
 
 namespace Searcher
@@ -62,7 +63,7 @@ namespace Searcher
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-           
+            StringBuilder StBuilder = new StringBuilder(); 
             Query text_query = text_parser.Parse(txt_search.Text);
             Query exactText_query = exactText_parser.Parse(txt_search.Text);
             BooleanQuery booleanquery = new BooleanQuery();
@@ -90,22 +91,27 @@ namespace Searcher
                 snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
                 snippet = snippet.Replace("</b>","</font></b>");
 
-
-                panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
+                StBuilder.Append("<b>عنوان:</b> " + resdoc.GetField("title").StringValue);
+                //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
              
                 if (resdoc.GetField("type").StringValue != "title")
                 {
-                    
-                    panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
+                    StBuilder.Append("<br/>" + " <b>متن پاراگراف :</b>  " + snippet);
+                   // panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
              
                 }
+                StBuilder.Append("<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n");
+                StBuilder.Append("<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>");
+                StBuilder.Append("<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>");
 
-                panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
-                panelEx1.Text += "<br/><b>نام فایل:</b> <a href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
-                panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
 
+                //panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                //panelEx1.Text += "<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
+                //panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
 
-                panelEx1.Text += "--------------------------<br/>" ;
+                StBuilder.Append("--------------------------<br/>");
+                //panelEx1.Text += "--------------------------<br/>" ;
+                panelEx1.Text = StBuilder.ToString();
             
             }
 
@@ -128,9 +134,9 @@ namespace Searcher
         }
         private void txt_search_TextChanged(object sender, EventArgs e)
         {
-            //if (txt_search.Text.Length < 1)
-            //    return;
-            //btn_search_Click(sender, e);
+            if (txt_search.Text.Length < 1)
+                return;
+            btn_search_Click(sender, e);
         }
 
         private void txt_result_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -140,7 +146,7 @@ namespace Searcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            panelEx1.MarkupLinkClick += panelEx1_MarkupLinkClick;
             string FilesPath = @"..\..\..\Data\filenames.txt";
             StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
             int SpaceBeetweenCheckboxes = 27;
@@ -174,6 +180,17 @@ namespace Searcher
 
 
       
+        }
+
+        void panelEx1_MarkupLinkClick(object sender, DevComponents.DotNetBar.MarkupLinkClickEventArgs e)
+        {
+            Process p = new Process();
+            if (File.Exists(e.HRef))
+            {
+                ProcessStartInfo MyInfo = new ProcessStartInfo(e.HRef);
+                p.StartInfo = MyInfo;
+                p.Start();
+            }
         }
 
         void MycheckBox_CheckedChanged(object sender, EventArgs e)
