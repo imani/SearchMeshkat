@@ -41,6 +41,7 @@
             this.comboItem2 = new DevComponents.Editors.ComboItem();
             this.labelX2 = new DevComponents.DotNetBar.LabelX();
             this.pagelabel = new System.Windows.Forms.Label();
+            this.lblRPP = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txt_search
@@ -70,10 +71,10 @@
             // txt_analyzed
             // 
             this.txt_analyzed.Font = new System.Drawing.Font("B Nazanin", 8.75F);
-            this.txt_analyzed.Location = new System.Drawing.Point(93, 77);
+            this.txt_analyzed.Location = new System.Drawing.Point(156, 88);
             this.txt_analyzed.Name = "txt_analyzed";
             this.txt_analyzed.ReadOnly = true;
-            this.txt_analyzed.Size = new System.Drawing.Size(277, 25);
+            this.txt_analyzed.Size = new System.Drawing.Size(214, 25);
             this.txt_analyzed.TabIndex = 3;
             // 
             // panelEx1
@@ -182,11 +183,19 @@
             this.pagelabel.Size = new System.Drawing.Size(95, 16);
             this.pagelabel.TabIndex = 12;
             // 
+            // lblRPP
+            // 
+            this.lblRPP.Location = new System.Drawing.Point(12, 92);
+            this.lblRPP.Name = "lblRPP";
+            this.lblRPP.Size = new System.Drawing.Size(138, 17);
+            this.lblRPP.TabIndex = 13;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(663, 521);
+            this.Controls.Add(this.lblRPP);
             this.Controls.Add(this.pagelabel);
             this.Controls.Add(this.labelX2);
             this.Controls.Add(this.cmb_Sort);
@@ -223,6 +232,7 @@
         private DevComponents.Editors.ComboItem comboItem1;
         private DevComponents.Editors.ComboItem comboItem2;
         private System.Windows.Forms.Label pagelabel;
+        private System.Windows.Forms.Label lblRPP;
     }
 }
 
