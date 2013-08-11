@@ -99,6 +99,7 @@ namespace Searcher
 
 
             string filePath=@"..\..\..\Data\";
+            
             for (int i = PageCounter * 10; i < result.ScoreDocs.Length; i++)
             {
                 
