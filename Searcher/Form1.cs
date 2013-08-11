@@ -36,10 +36,11 @@ namespace Searcher
         public QueryWrapperFilter filename_filter;
         public List<KeyValuePair<string, int>> RasoolList = new List<KeyValuePair<string, int>>();
         public int PageCounter;
+        public int ResultPerPage;
         public Form1()
         {
 
-           
+            ResultPerPage = 10;
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
             searcher = new IndexSearcher(indices);
             string[] Stopwords = File.ReadAllLines(@"..\..\..\Data\stopwords.txt", Encoding.UTF8);
@@ -82,13 +83,13 @@ namespace Searcher
             TopFieldDocs result=null;
             if (cmb_Sort.SelectedIndex==1)//search sort filename
             {
-                result = searcher.Search(booleanquery, filename_filter, (PageCounter+1)*10, FNameSort);
+                result = searcher.Search(booleanquery, filename_filter, (PageCounter + 1) * ResultPerPage, FNameSort);
 
             }
             else if (cmb_Sort.SelectedIndex==0)
             {
 
-                result = searcher.Search(booleanquery, filename_filter, (PageCounter+1)*10, scoreSort);
+                result = searcher.Search(booleanquery, filename_filter, (PageCounter + 1) * ResultPerPage, scoreSort);
                
             }
             panelEx1.ResetText();
@@ -101,10 +102,6 @@ namespace Searcher
             for (int i = PageCounter * 10; i < result.ScoreDocs.Length; i++)
             {
                 
-            //}
-            //    foreach (var res in result.ScoreDocs)
-            //    {
-                  //  var resdoc = searcher.Doc(res.Doc);
                 var res = result.ScoreDocs[i];
                 var resdoc = searcher.Doc(res.Doc);
 
@@ -138,9 +135,10 @@ namespace Searcher
 
                     StBuilder += "--------------------------<br/>";
                     //panelEx1.Text += "--------------------------<br/>" ;
-                    panelEx1.Text = StBuilder.ToString();
-
                 }
+
+            panelEx1.Text = StBuilder.ToString();
+            
 
    
             
@@ -164,7 +162,7 @@ namespace Searcher
             if (txt_search.Text.Length < 1)
                 return;
 
-            btn_search_Click(sender, e);
+            //btn_search_Click(sender, e);
         }
 
         private void txt_result_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -268,8 +266,8 @@ namespace Searcher
 
         private void cmb_Sort_SelectedIndexChanged(object sender, EventArgs e)
         {
-           if(txt_search.Text.Length>1)
-                btn_search_Click(sender, e);
+            if (txt_search.Text.Length > 1)
+               btn_search_Click(sender, e);
             
         }
 
