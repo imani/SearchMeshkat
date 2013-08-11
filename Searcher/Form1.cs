@@ -37,10 +37,14 @@ namespace Searcher
         public List<KeyValuePair<string, int>> RasoolList = new List<KeyValuePair<string, int>>();
         public int PageCounter;
         public int ResultPerPage;
+        public List<string> ResultList;
+        Int32 allchar = 0;
         public Form1()
         {
 
-            ResultPerPage = 10;
+            ResultPerPage = 1000;
+            ResultList = new List<string>();
+            
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
             searcher = new IndexSearcher(indices);
             string[] Stopwords = File.ReadAllLines(@"..\..\..\Data\stopwords.txt", Encoding.UTF8);
@@ -68,7 +72,7 @@ namespace Searcher
         private void btn_search_Click(object sender, EventArgs e)
         {
            pagelabel.Text ="شماره صفحه : "+ (PageCounter + 1).ToString();
-            string StBuilder = "";
+           string ResultString = "";
             RasoolList.Clear();
 
             Query text_query = text_parser.Parse(txt_search.Text);
@@ -100,9 +104,11 @@ namespace Searcher
 
             string filePath=@"..\..\..\Data\";
             
+
             for (int i = PageCounter *ResultPerPage; i < result.ScoreDocs.Length; i++)
             {
-                
+                string StingVar = "";
+
                 var res = result.ScoreDocs[i];
                 var resdoc = searcher.Doc(res.Doc);
 
@@ -110,9 +116,11 @@ namespace Searcher
                     string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 1000);
                     snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
                     snippet = snippet.Replace("</b>", "</font></b>");
-
-                    StBuilder += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
-                    //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
+                //    ResultString += "شماره جستجو : "+i.ToString()+"<br/>";
+                    StingVar += "شماره جستجو : " + i.ToString() + "<br/>";
+              //  ResultString += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
+                    StingVar += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue; ;
+                //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
 
                     KeyValuePair<string, int> ResultPair = new KeyValuePair<string, int>(resdoc.GetField("filename").StringValue, Convert.ToInt16(resdoc.GetField("paragraphid").StringValue));
                     RasoolList.Add(ResultPair);
@@ -120,32 +128,56 @@ namespace Searcher
 
                     if (resdoc.GetField("type").StringValue != "title")
                     {
-                        StBuilder += "<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
-
+                     //   ResultString += "<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
+                        StingVar += "<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
                         // panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
 
                     }
-                    StBuilder += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
-                    StBuilder += "<br/><b>نام فایل:</b> <a  href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue + "</a>";
-                    StBuilder += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
+                  //  ResultString += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                  //  ResultString += "<br/><b>نام فایل:</b> <a  href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue + "</a>";
+                  //  ResultString += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
+
+
+                    
+                         StingVar += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                    StingVar += "<br/><b>نام فایل:</b> <a  href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue + "</a>";
+                    StingVar += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
 
 
                     //panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
                     //panelEx1.Text += "<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
                     //panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
 
-                    StBuilder += "--------------------------<br/>";
+                 //   ResultString += "--------------------------<br/>";
+                StingVar += "--------------------------<br/>";
                     //panelEx1.Text += "--------------------------<br/>" ;
+                    ResultList.Add(StingVar);
+                   
                 }
 
-            panelEx1.Text = StBuilder.ToString();
-            
+            for (int i = 0; i < 10; i++)
+            {
+                panelEx1.Text += ResultList[i];
+            }
 
-   
             
+             
+        }
+        int cur = 10;
+        void panelEx1_Scroll(object sender, ScrollEventArgs e)
+        {
+            //if(e.NewValue>10000)
+           // MessageBox.Show("max" + panelEx1.VerticalScroll.Maximum + "new" + e.NewValue.ToString());
 
-      
-            
+            // int currentPar = e.NewValue / panelEx1.VerticalScroll.Maximum
+            if (e.NewValue > panelEx1.VerticalScroll.Maximum - 500)
+            {
+                for (int k = 0; k < 5; k++)
+                {
+                    panelEx1.Text += ResultList.ElementAt(cur);
+                    cur ++;
+                }
+            }
         }
 
         static FastVectorHighlighter getHighlighter()
@@ -173,10 +205,12 @@ namespace Searcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            lblRPP.Text = "تعداد نتایج در هر صفحه : "+ResultPerPage.ToString();
             cmb_Sort.SelectedIndex = 0;
+            this.MouseWheel += Form1_MouseWheel;
             pageNavigator1.NavigateNextPage += pageNavigator1_NavigateNextPage;
             pageNavigator1.NavigatePreviousPage += pageNavigator1_NavigatePreviousPage;
-        
+            panelEx1.Scroll += panelEx1_Scroll;
             panelEx1.MarkupLinkClick += panelEx1_MarkupLinkClick;
             string FilesPath = @"..\..\..\Data\filenames.txt";
             StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
@@ -212,6 +246,13 @@ namespace Searcher
 
       
         }
+
+        void Form1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            panelEx1.Focus();
+        }
+
+      
        
         void pageNavigator1_NavigatePreviousPage(object sender, EventArgs e)
         {
