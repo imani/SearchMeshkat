@@ -42,7 +42,7 @@ namespace Searcher
         public Form1()
         {
 
-            ResultPerPage = 1000;
+            ResultPerPage = 100;
             ResultList = new List<string>();
             
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
@@ -152,13 +152,13 @@ namespace Searcher
                 StingVar += "--------------------------<br/>";
                     //panelEx1.Text += "--------------------------<br/>" ;
                     ResultList.Add(StingVar);
-                   
+                    panelEx1.Text += StingVar;
                 }
 
-            for (int i = 0; i < 10; i++)
-            {
-                panelEx1.Text += ResultList[i];
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    panelEx1.Text += ResultList[i];
+            //}
 
             
              
@@ -210,7 +210,7 @@ namespace Searcher
             this.MouseWheel += Form1_MouseWheel;
             pageNavigator1.NavigateNextPage += pageNavigator1_NavigateNextPage;
             pageNavigator1.NavigatePreviousPage += pageNavigator1_NavigatePreviousPage;
-            panelEx1.Scroll += panelEx1_Scroll;
+          //  panelEx1.Scroll += panelEx1_Scroll;
             panelEx1.MarkupLinkClick += panelEx1_MarkupLinkClick;
             string FilesPath = @"..\..\..\Data\filenames.txt";
             StreamReader MyReader = new StreamReader(FilesPath, Encoding.UTF8);
