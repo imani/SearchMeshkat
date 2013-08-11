@@ -100,7 +100,7 @@ namespace Searcher
 
             string filePath=@"..\..\..\Data\";
             
-            for (int i = PageCounter * 10; i < result.ScoreDocs.Length; i++)
+            for (int i = PageCounter *ResultPerPage; i < result.ScoreDocs.Length; i++)
             {
                 
                 var res = result.ScoreDocs[i];
