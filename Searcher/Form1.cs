@@ -42,7 +42,7 @@ namespace Searcher
 
             ResultPerPage = 10;
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
-            searcher = new IndexSearcher(indices);
+            searcher = new IndexSearcher(indices, true);
             string[] Stopwords = File.ReadAllLines(@"..\..\..\Data\stopwords.txt", Encoding.UTF8);
 
             HashSet<string> StopHashst = new HashSet<string>();
