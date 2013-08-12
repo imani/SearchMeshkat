@@ -68,6 +68,17 @@ namespace Searcher
             InitializeComponent();
         }
 
+        private List<string> SuggestionList(string query)
+        {
+            Lucene.Net.Store.Directory dirIndex = FSDirectory.Open(@"..\..\..\Data\spellCheckDir");
+            Lucene.Net.Index.IndexReader reader = Lucene.Net.Index.IndexReader.Open(dirIndex, true);
+
+
+            SpellChecker.Net.Search.Spell.SpellChecker speller = new SpellChecker.Net.Search.Spell.SpellChecker(dirIndex);
+            speller.IndexDictionary(new SpellChecker.Net.Search.Spell.LuceneDictionary(reader, "text"));
+            string[] suggestions = speller.SuggestSimilar(query, 10);
+            return suggestions.ToList<string>();
+        }
         private void btn_search_Click(object sender, EventArgs e)
         {
             pagelabel.Text = "شماره صفحه : " + (PageCounter + 1).ToString();
@@ -145,6 +156,13 @@ namespace Searcher
         }
         private void txt_search_TextChanged(object sender, EventArgs e)
         {
+            AutoCompleteStringCollection suggestCollection = new AutoCompleteStringCollection();
+            for (int i = 0; i < SuggestionList(txt_search.Text).Count; i++)
+            {
+                suggestCollection.Add(SuggestionList(txt_search.Text).ElementAt(i).ToString());
+            }
+                txt_search.AutoCompleteSource = AutoCompleteSource.CustomSource;
+                txt_search.AutoCompleteCustomSource = suggestCollection;
             if (txt_search.Text.Length < 1)
                 return;
 
@@ -311,6 +329,16 @@ namespace Searcher
         {
 
         }
+      
+        private void btnAddPARENTHESIS_Click(object sender, EventArgs e)
+        {
+            txt_search.Text += "()";
+            txt_search.SelectionStart = txt_search.Text.Length - 1;
+            txt_search.SelectionLength = 0;
+            txt_search.Select();
+        }
+
+      
 
       
     }

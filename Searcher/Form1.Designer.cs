@@ -49,7 +49,7 @@
             this.btnNot = new System.Windows.Forms.Button();
             this.btnXor = new System.Windows.Forms.Button();
             this.btnRoot = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
+            this.btnAddPARENTHESIS = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -57,6 +57,7 @@
             // 
             // txt_search
             // 
+            this.txt_search.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.txt_search.Font = new System.Drawing.Font("B Nazanin", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
             this.highlighter1.SetHighlightColor(this.txt_search, DevComponents.DotNetBar.Validator.eHighlightColor.Orange);
             this.highlighter1.SetHighlightOnFocus(this.txt_search, true);
@@ -267,13 +268,15 @@
             this.btnRoot.Text = "ریشه";
             this.btnRoot.UseVisualStyleBackColor = true;
             // 
-            // button8
+            // btnAddPARENTHESIS
             // 
-            this.button8.Location = new System.Drawing.Point(172, 95);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(57, 23);
-            this.button8.TabIndex = 31;
-            this.button8.UseVisualStyleBackColor = true;
+            this.btnAddPARENTHESIS.Location = new System.Drawing.Point(172, 95);
+            this.btnAddPARENTHESIS.Name = "btnAddPARENTHESIS";
+            this.btnAddPARENTHESIS.Size = new System.Drawing.Size(57, 23);
+            this.btnAddPARENTHESIS.TabIndex = 31;
+            this.btnAddPARENTHESIS.Text = "(  )";
+            this.btnAddPARENTHESIS.UseVisualStyleBackColor = true;
+            this.btnAddPARENTHESIS.Click += new System.EventHandler(this.btnAddPARENTHESIS_Click);
             // 
             // button9
             // 
@@ -316,7 +319,7 @@
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
-            this.Controls.Add(this.button8);
+            this.Controls.Add(this.btnAddPARENTHESIS);
             this.Controls.Add(this.btnRoot);
             this.Controls.Add(this.btnXor);
             this.Controls.Add(this.btnNot);
@@ -365,7 +368,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button btnAddPARENTHESIS;
         private System.Windows.Forms.Button btnRoot;
         private System.Windows.Forms.Button btnXor;
         private System.Windows.Forms.Button btnNot;
