@@ -23,7 +23,6 @@ using Lucene.Net.Search.Highlight;
 using Lucene.Net.Index;
 using Lucene.Net.Documents;
 
-
 namespace Searcher
 {
     public partial class Form1 : Form
@@ -42,7 +41,7 @@ namespace Searcher
         public Form1()
         {
 
-            ResultPerPage = 100;
+            ResultPerPage = 10;
             ResultList = new List<string>();
             
             Lucene.Net.Store.Directory indices = FSDirectory.Open(path);
@@ -71,10 +70,8 @@ namespace Searcher
 
         private void btn_search_Click(object sender, EventArgs e)
         {
-           pagelabel.Text ="شماره صفحه : "+ (PageCounter + 1).ToString();
-           string ResultString = "";
+            pagelabel.Text = "شماره صفحه : " + (PageCounter + 1).ToString();
             RasoolList.Clear();
-
             Query text_query = text_parser.Parse(txt_search.Text);
             Query exactText_query = exactText_parser.Parse(txt_search.Text);
             BooleanQuery booleanquery = new BooleanQuery();
@@ -84,92 +81,48 @@ namespace Searcher
             SortField[] SortFields = new SortField[] { new SortField("filename", SortField.STRING), new SortField("paragraphid", SortField.STRING) };
             Sort FNameSort = new Sort(SortFields);
             Sort scoreSort = new Sort();
-            TopFieldDocs result=null;
-            if (cmb_Sort.SelectedIndex==1)//search sort filename
+            TopFieldDocs result = null;
+            if (cmb_Sort.SelectedIndex == 1)//search sort filename
             {
                 result = searcher.Search(booleanquery, filename_filter, (PageCounter + 1) * ResultPerPage, FNameSort);
-
             }
-            else if (cmb_Sort.SelectedIndex==0)
+            else if (cmb_Sort.SelectedIndex == 0)
             {
-
                 result = searcher.Search(booleanquery, filename_filter, (PageCounter + 1) * ResultPerPage, scoreSort);
-               
             }
             panelEx1.ResetText();
             FastVectorHighlighter highlighter = new FastVectorHighlighter();
-            
             FieldQuery fieldQuery = highlighter.GetFieldQuery(booleanquery);
-
-
-            string filePath=@"..\..\..\Data\";
-            
-
-            for (int i = PageCounter *ResultPerPage; i < result.ScoreDocs.Length; i++)
+            string filePath = @"..\..\..\Data\";
+            for (int i = PageCounter * ResultPerPage; i < result.ScoreDocs.Length; i++)
             {
-                string StingVar = "";
-
+                string StringVar = "";
                 var res = result.ScoreDocs[i];
                 var resdoc = searcher.Doc(res.Doc);
-
-
-                    string snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 1000);
-                    snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
-                    snippet = snippet.Replace("</b>", "</font></b>");
-                //    ResultString += "شماره جستجو : "+i.ToString()+"<br/>";
-                    StingVar += "شماره جستجو : " + i.ToString() + "<br/>";
-              //  ResultString += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
-                    StingVar += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue; ;
-                //panelEx1.Text += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue;
-
-                    KeyValuePair<string, int> ResultPair = new KeyValuePair<string, int>(resdoc.GetField("filename").StringValue, Convert.ToInt16(resdoc.GetField("paragraphid").StringValue));
-                    RasoolList.Add(ResultPair);
-
-
-                    if (resdoc.GetField("type").StringValue != "title")
-                    {
-                     //   ResultString += "<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
-                        StingVar += "<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
-                        // panelEx1.Text += "<br/>"+" <b>متن پاراگراف :</b>  " + snippet;
-
-                    }
-                  //  ResultString += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
-                  //  ResultString += "<br/><b>نام فایل:</b> <a  href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue + "</a>";
-                  //  ResultString += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
-
-
-                    
-                         StingVar += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
-                    StingVar += "<br/><b>نام فایل:</b> <a  href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue + "</a>";
-                    StingVar += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
-
-
-                    //panelEx1.Text += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
-                    //panelEx1.Text += "<br/><b>نام فایل:</b> <a onclick=\"alert('hello');\" href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue+"</a>";
-                    //panelEx1.Text += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
-
-                 //   ResultString += "--------------------------<br/>";
-                StingVar += "--------------------------<br/>";
-                    //panelEx1.Text += "--------------------------<br/>" ;
-                    ResultList.Add(StingVar);
-                    panelEx1.Text += StingVar;
+                string snippet = "";
+                snippet = highlighter.GetBestFragment(fieldQuery, searcher.IndexReader, res.Doc, "text", 1000);
+                snippet = snippet.Replace("<b>", "<b> <font   color=\"blue\">");
+                snippet = snippet.Replace("</b>", "</font></b>");
+                StringVar += "شماره جستجو : " + i.ToString() + "<br/>";
+                StringVar += "<b>عنوان:</b> " + resdoc.GetField("title").StringValue; ;
+                KeyValuePair<string, int> ResultPair = new KeyValuePair<string, int>(resdoc.GetField("filename").StringValue, Convert.ToInt16(resdoc.GetField("paragraphid").StringValue));
+                RasoolList.Add(ResultPair);
+                if (resdoc.GetField("type").StringValue != "title")
+                {
+                    StringVar += "<br/>" + " <b>متن پاراگراف :</b>  " + snippet;
                 }
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    panelEx1.Text += ResultList[i];
-            //}
-
-            
-             
+                StringVar += "<br/><b>شماره پاراگراف:</b> " + resdoc.GetField("paragraphid").StringValue + "\n";
+                StringVar += "<br/><b>نام فایل:</b> <a  href=\"" + filePath + resdoc.GetField("filename").StringValue + ".docx\" >" + resdoc.GetField("filename").StringValue + "</a>";
+                StringVar += "<br/><b>نوع :</b> " + resdoc.GetField("type").StringValue + "<br/>";
+                StringVar += "--------------------------<br/>";
+                ResultList.Add(StringVar);
+                panelEx1.Text += StringVar;
+            }
         }
         int cur = 10;
         void panelEx1_Scroll(object sender, ScrollEventArgs e)
         {
-            //if(e.NewValue>10000)
-           // MessageBox.Show("max" + panelEx1.VerticalScroll.Maximum + "new" + e.NewValue.ToString());
-
-            // int currentPar = e.NewValue / panelEx1.VerticalScroll.Maximum
+            
             if (e.NewValue > panelEx1.VerticalScroll.Maximum - 500)
             {
                 for (int k = 0; k < 5; k++)
@@ -311,6 +264,52 @@ namespace Searcher
             if (txt_search.Text.Length > 1)
                btn_search_Click(sender, e);
             
+        }
+
+        private void btnPhrase_Click(object sender, EventArgs e)
+        {
+            txt_search.Text += "\"\"";
+            txt_search.SelectionStart = txt_search.Text.Length - 1;
+            txt_search.SelectionLength = 0;
+            txt_search.Select();
+            comboBox1.Enabled = true;
+        }
+
+      
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txt_search.Text += "~" + comboBox1.SelectedItem.ToString();
+            txt_search.SelectionStart = txt_search.Text.Length;
+            txt_search.SelectionLength = 0;
+            txt_search.Select();
+        }
+
+        private void btnAnd_Click(object sender, EventArgs e)
+        {
+            txt_search.Text += " + ";
+            txt_search.SelectionStart = txt_search.Text.Length;
+            txt_search.SelectionLength = 0;
+            txt_search.Select();
+            
+        }
+
+        private void btnOr_Click(object sender, EventArgs e)
+        {
+          //  txt_search.Text += "|";
+        }
+
+        private void btnNot_Click(object sender, EventArgs e)
+        {
+            txt_search.Text += " ! ";
+            txt_search.SelectionStart = txt_search.Text.Length;
+            txt_search.SelectionLength = 0;
+            txt_search.Select();
+        }
+
+        private void btnXor_Click(object sender, EventArgs e)
+        {
+
         }
 
       
