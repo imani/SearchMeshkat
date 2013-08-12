@@ -70,6 +70,8 @@ namespace Searcher
 
         private List<string> SuggestionList(string query)
         {
+            if (query.Length < 1)
+                return new List<String>();
             Lucene.Net.Store.Directory dirIndex = FSDirectory.Open(@"..\..\..\Data\spellCheckDir");
             Lucene.Net.Index.IndexReader reader = Lucene.Net.Index.IndexReader.Open(dirIndex, true);
 
