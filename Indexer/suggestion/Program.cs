@@ -49,6 +49,7 @@ namespace suggestion
 
         static Dictionary<String, int> wordFreqList(string filePath, Dictionary<String, int> wfDic, String[] Stopwords)
         {
+            int counter = 0;
             StreamReader reader = new StreamReader(filePath);
             var document = WordprocessingDocument.Open(filePath, false);
             MainDocumentPart mainPart = document.MainDocumentPart;
@@ -80,19 +81,23 @@ namespace suggestion
                 if (!pars[i].InnerXml.Contains("center") && pars[i].InnerXml.Contains("w:color") && !pars[i].InnerXml.Contains("w:sz w:val=\"21\""))
                 {
                     String text = pars[i].InnerText;
-                    text.Replace('ک', 'ك').Replace('ی', 'ي');
-                    String[] words = text.Split(' ','.',':','؛',')','(','،','؟','!');
-                    foreach (String w in words)
+                    text = text.Replace('ك', 'ک').Replace('ي', 'ی');
+                    text = text.Replace("ُ", "").Replace("ِ","").Replace("َ","").Replace("ّ","");
+                    text = text.Replace("ْ","").Replace("ٌ","").Replace("ٍ","").Replace("ً","");
+                    String[] words = text.Split(' ','.',':','؛',')','(','،','؟','!',']','[','}','{');
+                    for(int g=0; g<words.Length - 2; g++)
                     {
-                        if (!(w.Length < 4 || Stopwords.Contains(w)))
+                        if (!(words[g].Length < 2 || Stopwords.Contains(words[g])))
                         {
+                            if(counter++ % 1000 == 0)
+                                Console.Write(".");
                             try
                             {
-                                wfDic[w]++;
+                                wfDic[words[g] + " " + words[g+1] + " " + words[g+2]]++;
                             }
                             catch (KeyNotFoundException exc)
                             {
-                                wfDic.Add(w, 1);
+                                wfDic.Add(words[g] + " " + words[g + 1] + " " + words[g + 2], 1);
                             }
                         }
                     }
@@ -108,25 +113,28 @@ namespace suggestion
             Dictionary<String, int> wfDic = new Dictionary<string, int>();
             //reading files
             DirectoryInfo dir = new DirectoryInfo(data_dir);
-
+            Console.Write("reading");
             foreach (FileInfo file in dir.GetFiles())
             {
                 
                 if (file.Extension == ".docx")
                 {
                     wfDic = wordFreqList(file.FullName, wfDic, Stopwords);
-                    Console.WriteLine("Indexing " + file.Name + " Finished.");
                 }
             }
-            SortedDictionary<string, int> words_sortedList = new SortedDictionary<string, int>(wfDic);
 
-            var writer = new StreamWriter(data_dir + "wordList.txt");
+            Console.Write("\nwriting");
+            var writer = new StreamWriter(data_dir + "wordList.txt", true);
             int counter = 0;
-            foreach (String w in words_sortedList.Keys)
+            
+            foreach (KeyValuePair<string, int> w in wfDic.OrderByDescending(key=> key.Value))
             {
-                writer.WriteLine(w);
-                if (counter++ % 1000 == 0)
-                    Console.Write(". ");
+                if (w.Value > 10)
+                {
+                    writer.WriteLine(w.Key);
+                    if (counter++ % 1000 == 0)
+                        Console.Write(". ");
+                }
             }
            
 
