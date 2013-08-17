@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 using DevComponents.DotNetBar.Controls;
 
@@ -22,6 +23,7 @@ using Lucene.Net.Search.Vectorhighlight;
 using Lucene.Net.Search.Highlight;
 using Lucene.Net.Index;
 using Lucene.Net.Documents;
+
 
 namespace Searcher
 {
@@ -83,10 +85,23 @@ namespace Searcher
         }
         private void btn_search_Click(object sender, EventArgs e)
         {
+            string querytext = "";
+            if (PageCounter == 0 && txt_search.Text.Contains("xor"))
+            {
+                string Query = txt_search.Text;
+                Match XorMath = Regex.Match(Query, "([^\\s]*) xor ([^\\s]*)");
+                string[] separators = new string[] { " xor " };
+                string[] strs = XorMath.Value.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+                querytext = Query.Replace(XorMath.Value, string.Format("(+({0} {1})-(+{0}+{1}))", strs[0], strs[1]));
+            }
+            else
+                querytext = txt_search.Text;
+
             pagelabel.Text = "شماره صفحه : " + (PageCounter + 1).ToString();
             RasoolList.Clear();
-            Query text_query = text_parser.Parse(txt_search.Text);
-            Query exactText_query = exactText_parser.Parse(txt_search.Text);
+            Query text_query = text_parser.Parse(querytext);
+            Query exactText_query = exactText_parser.Parse(querytext);
             BooleanQuery booleanquery = new BooleanQuery();
             booleanquery.Add(text_query, Occur.MUST);
             booleanquery.Add(exactText_query, Occur.SHOULD);
@@ -329,7 +344,10 @@ namespace Searcher
 
         private void btnXor_Click(object sender, EventArgs e)
         {
-
+            txt_search.Text += " xor  ";  
+            txt_search.SelectionStart = txt_search.Text.Length - 1;
+            txt_search.SelectionLength = 0;
+            txt_search.Select();
         }
       
         private void btnAddPARENTHESIS_Click(object sender, EventArgs e)
