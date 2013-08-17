@@ -59,8 +59,7 @@
             // 
             this.txt_search.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.txt_search.Font = new System.Drawing.Font("B Nazanin", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
-            this.highlighter1.SetHighlightColor(this.txt_search, DevComponents.DotNetBar.Validator.eHighlightColor.Orange);
-            this.highlighter1.SetHighlightOnFocus(this.txt_search, true);
+            this.highlighter1.SetHighlightColor(this.txt_search, DevComponents.DotNetBar.Validator.eHighlightColor.Green);
             this.txt_search.Location = new System.Drawing.Point(12, 32);
             this.txt_search.Name = "txt_search";
             this.txt_search.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -128,7 +127,7 @@
             // pnlCheckbox
             // 
             this.pnlCheckbox.AutoScroll = true;
-            this.highlighter1.SetHighlightColor(this.pnlCheckbox, DevComponents.DotNetBar.Validator.eHighlightColor.Red);
+            this.highlighter1.SetHighlightColor(this.pnlCheckbox, DevComponents.DotNetBar.Validator.eHighlightColor.Green);
             this.pnlCheckbox.Location = new System.Drawing.Point(479, 130);
             this.pnlCheckbox.Name = "pnlCheckbox";
             this.pnlCheckbox.Size = new System.Drawing.Size(283, 428);
