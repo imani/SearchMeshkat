@@ -42,7 +42,6 @@ namespace Searcher
         Int32 allchar = 0;
         public Form1()
         {
-
             ResultPerPage = 10;
             ResultList = new List<string>();
             
@@ -170,6 +169,8 @@ namespace Searcher
         }
         private void txt_search_TextChanged(object sender, EventArgs e)
         {
+            /*
+             * suugestion list with lucene 
             PageCounter = 0;
             AutoCompleteStringCollection suggestCollection = new AutoCompleteStringCollection();
             for (int i = 0; i < SuggestionList(txt_search.Text).Count; i++)
@@ -180,6 +181,8 @@ namespace Searcher
                 txt_search.AutoCompleteCustomSource = suggestCollection;
             if (txt_search.Text.Length < 1)
                 return;
+             */
+
 
             //btn_search_Click(sender, e);
         }
@@ -191,6 +194,14 @@ namespace Searcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //suto completion
+            string[] suggestionList = File.ReadAllLines(@"..\..\..\Data\wordList.txt", Encoding.UTF8);
+            var source = new AutoCompleteStringCollection();
+            source.AddRange(suggestionList);
+            txt_search.AutoCompleteCustomSource = source;
+            txt_search.AutoCompleteMode = AutoCompleteMode.Suggest;
+            txt_search.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
             lblRPP.Text = "تعداد نتایج در هر صفحه : "+ResultPerPage.ToString();
             cmb_Sort.SelectedIndex = 0;
             this.MouseWheel += Form1_MouseWheel;

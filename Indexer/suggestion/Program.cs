@@ -81,7 +81,7 @@ namespace suggestion
                 if (!pars[i].InnerXml.Contains("center") && pars[i].InnerXml.Contains("w:color") && !pars[i].InnerXml.Contains("w:sz w:val=\"21\""))
                 {
                     String text = pars[i].InnerText;
-                    text = text.Replace('ک', 'ك').Replace('ی', 'ي');
+                    text = text.Replace('ك', 'ک').Replace('ي', 'ی');
                     text = text.Replace("ُ", "").Replace("ِ","").Replace("َ","").Replace("ّ","");
                     text = text.Replace("ْ","").Replace("ٌ","").Replace("ٍ","").Replace("ً","");
                     String[] words = text.Split(' ','.',':','؛',')','(','،','؟','!',']','[','}','{');
@@ -129,9 +129,12 @@ namespace suggestion
             
             foreach (KeyValuePair<string, int> w in wfDic.OrderByDescending(key=> key.Value))
             {
-                writer.WriteLine(w.Key);
-                if (counter++ % 1000 == 0)
-                    Console.Write(". ");
+                if (w.Value > 10)
+                {
+                    writer.WriteLine(w.Key);
+                    if (counter++ % 1000 == 0)
+                        Console.Write(". ");
+                }
             }
            
 
