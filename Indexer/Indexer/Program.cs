@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Collections;
 
-using Lucene.Net;
 using Lucene.Net.Analysis.AR;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Analysis;
@@ -26,14 +23,23 @@ namespace Indexer
 {
   class Program
     {
-
+      public struct JeldInformation
+      {
+          int index, start, end;
+          public JeldInformation(String[] p)
+          {
+              index = Int32.Parse(p[0]);
+              start = Int32.Parse(p[1]);
+              end = Int32.Parse(p[2]);
+          }
+      }
 
       
         static void Main(string[] args)
         {
           
             Lucene.Net.Store.Directory index_dir = FSDirectory.Open(@"..\..\..\..\Index");
-            String data_dir = @"..\..\..\..\Data\";
+            String data_dir = @"..\..\..\..\Data\AllBooks\";
             string[] Stopwords = File.ReadAllLines(data_dir + "stopwords.txt",Encoding.UTF8);
 
             //create stop words set
@@ -66,15 +72,51 @@ namespace Indexer
             //reading files
             DirectoryInfo dir = new DirectoryInfo(data_dir);
 
-            foreach (FileInfo file in dir.GetFiles())
+            //iterate over directories
+            foreach (DirectoryInfo book in dir.GetDirectories())
             {
-                
-                if (file.Extension == ".docx")
+                string bookId = book.Name;
+                DirectoryInfo text_dir = new DirectoryInfo(book.FullName + "/Text");
+                StreamReader jeldReader = new StreamReader(book.FullName + "/Jelds.txt");
+                var metadata_dir = new DirectoryInfo( book.FullName + "/MetaData/");
+                List<JeldInformation> jeldList = new List<JeldInformation>();
+
+                while (jeldReader.EndOfStream)
                 {
-                    fileNames += file.Name.Substring(0, file.Name.Length - 5) + ",";
-                    IndexFunc(file.FullName, writer);
-                    Console.WriteLine("Indexing " + file.Name + " Finished.");
+                    var part = jeldReader.ReadLine().Split(',');
+                    jeldList.Add(new JeldInformation(part));
                 }
+
+                foreach (FileInfo file in metadata_dir.GetFiles())
+                {
+                    var paragraphReader = new StreamReader(file.FullName);
+                    var pageReader = new StreamReader(text_dir.FullName + file.Name);
+                    int pageId = Int32.Parse(file.Name.Substring(0, file.Name.Length - file.Extension.Length));
+                    int jeldId = 0;
+                    while (true)
+                    {
+                        if (pageId > jeldIndex[jeldId])
+                            jeldId++;
+                    }
+                    while (paragraphReader.EndOfStream)
+                    {
+                        string paraline = paragraphReader.ReadLine();
+                        if (paraline.Contains("☺"))
+                            paraline = paragraphReader.ReadLine();
+                        string[] paragraph_indices = paragraphReader.ReadLine().Split(',');
+                        int paragraph_num = Int32.Parse(paragraph_indices[0]);
+                        int start = Int32.Parse(paragraph_indices[1]);
+                        int count = Int32.Parse(paragraph_indices[2]) - start;
+
+                        char[] buffer = new char[count];
+                        pageReader.Read(buffer, start, count);
+                        string text = new string(buffer);
+                        Lucene.Net.Documents.Document doc  = createDoc(text, bookId, jeldId, pageId, paragraph_num);
+                        writer.AddDocument(doc);
+                    }
+                    
+                }             
+                
             }
 
             //write name of files in a text file
@@ -87,6 +129,7 @@ namespace Indexer
 
         }
 
+      /*
         static void IndexFunc(string filePath, IndexWriter writer)
         {
             StreamReader reader = new StreamReader(filePath);
@@ -163,6 +206,19 @@ namespace Indexer
 
             }
      
+        }*/
+
+        static Lucene.Net.Documents.Document createDoc(String text, string bookId, int jeldId, int pageId, int paragraphId)
+        {
+            var doc = new Lucene.Net.Documents.Document();
+            doc.Add( new Field("text", text, Field.Store.NO, Field.Index.ANALYZED));
+            doc.Add( new Field("bookId", bookId, Field.Store.YES, Field.Index.NO));
+            doc.Add( new Field("jeldId", jeldId.ToString(), Field.Store.YES, Field.Index.NO));
+            doc.Add( new Field("pageId", pageId.ToString(), Field.Store.YES, Field.Index.NO));
+            doc.Add( new Field("paragraphId", paragraphId.ToString(), Field.Store.YES, Field.Index.NO));
+
+            return doc;
         }
+
     }
 }
