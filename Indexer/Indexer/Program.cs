@@ -25,7 +25,7 @@ namespace Indexer
     {
       public struct JeldInformation
       {
-          int index, start, end;
+          public int index, start, end;
           public JeldInformation(String[] p)
           {
               index = Int32.Parse(p[0]);
@@ -81,7 +81,7 @@ namespace Indexer
                 var metadata_dir = new DirectoryInfo( book.FullName + "/MetaData/");
                 List<JeldInformation> jeldList = new List<JeldInformation>();
 
-                while (jeldReader.EndOfStream)
+                while (!jeldReader.EndOfStream)
                 {
                     var part = jeldReader.ReadLine().Split(',');
                     jeldList.Add(new JeldInformation(part));
@@ -90,32 +90,44 @@ namespace Indexer
                 foreach (FileInfo file in metadata_dir.GetFiles())
                 {
                     var paragraphReader = new StreamReader(file.FullName);
-                    var pageReader = new StreamReader(text_dir.FullName + file.Name);
+                    var pageReader = new StreamReader(text_dir.FullName + "\\" + file.Name);
+                    
                     int pageId = Int32.Parse(file.Name.Substring(0, file.Name.Length - file.Extension.Length));
-                    int jeldId = 0;
-                    while (true)
-                    {
-                        if (pageId > jeldIndex[jeldId])
-                            jeldId++;
-                    }
-                    while (paragraphReader.EndOfStream)
+                    int counter = 0;                  
+
+                    while (!paragraphReader.EndOfStream)
                     {
                         string paraline = paragraphReader.ReadLine();
-                        if (paraline.Contains("☺"))
-                            paraline = paragraphReader.ReadLine();
-                        string[] paragraph_indices = paragraphReader.ReadLine().Split(',');
+                        if (paraline.Contains("☺") || paraline == null)
+                            continue;
+                        string[] paragraph_indices = paraline.Split(',');
                         int paragraph_num = Int32.Parse(paragraph_indices[0]);
                         int start = Int32.Parse(paragraph_indices[1]);
-                        int count = Int32.Parse(paragraph_indices[2]) - start;
+                        int end = Int32.Parse(paragraph_indices[2]);
+                        int count = end - start;
+
+                        int i = 0;
+                        JeldInformation currentJeld = jeldList[i];
+                        while (true)
+                        {
+                            currentJeld = jeldList[i];
+                            if (pageId > currentJeld.end)
+                                i++;
+                            else
+                                break;
+                        }
+
 
                         char[] buffer = new char[count];
-                        pageReader.Read(buffer, start, count);
+                        pageReader.Read(buffer, 0, count);
                         string text = new string(buffer);
-                        Lucene.Net.Documents.Document doc  = createDoc(text, bookId, jeldId, pageId, paragraph_num);
+                        Lucene.Net.Documents.Document doc  = createDoc(text, bookId, currentJeld.index, pageId, paragraph_num);
                         writer.AddDocument(doc);
                     }
                     
-                }             
+                }
+
+                Console.WriteLine("a book finished!");
                 
             }
 
